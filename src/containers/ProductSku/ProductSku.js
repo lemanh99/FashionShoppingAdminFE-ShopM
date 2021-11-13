@@ -1,37 +1,43 @@
 import { MDBDataTable } from "mdbreact";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, Redirect } from "react-router-dom";
 import {
   addProductSku,
   deleteProductSku,
+  getListProduct,
   getListProductSku,
   getListProductSkuByProductId,
   updateProductSku,
 } from "../../actions";
+import { getColor, getSize } from "../../actions/Master/master.action";
 import Layout from "../../components/Layout";
 import Notification from "../../components/UI/Notification";
 import { convert_datetime_from_timestamp } from "../../utils";
-import AddProductModal from "../Product/components/AddProductModal";
-import DeleteProductModal from "../Product/components/DeleteProductModal";
-import EditProductModal from "../Product/components/EditProductModal";
-import ViewProductModal from "../Product/components/ViewProductModal";
+import AddProductSkuModal from "./components/AddProductSkuModal";
+import EditProductSkuModal from "./components/EditProductSkuModal";
+import ViewProductSkuModal from "./components/ViewProductSkuModal";
 
 const ProductSku = (props) => {
   const product_id = props.match.params.id
 
   const product_skus = useSelector((state) => state.product_sku);
+  const products = useSelector((state) => state.product);
   const brands = useSelector((state) => state.brand);
   const categories = useSelector((state) => state.category);
+  const listSize = useSelector((state) => state.master.size)
+  const listColor = useSelector((state) => state.master.color)
 
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [quantity, setQuantity] = useState(0);
-  const [description, setDescription] = useState("");
-  const [reviews, setReviews] = useState([]);
-  const [discount, setDiscount] = useState(0);
-  const [category, setCategory] = useState("");
-  const [brandId, setBrandId] = useState("");
-  const [productPictures, setProductPictures] = useState([]);
+  const [productId, setProductId] = useState([]);
+  const [productSkuId, setProductSkuId] = useState(null);
+  const [productName, setProductName] = useState(null);
+  const [dataProductSku, setDataProductSku] = useState([]);
+  const [stock, setStock] = useState(null);
+  const [price, setPrice] = useState(null);
+  const [size, setSize] = useState(null);
+  const [color, setColor] = useState(null);
+  const [imageSku, setImageSku] = useState([]);
+  const [imageSkuShow, setImageSkuShow] = useState(null);
   const [listProductSku, setListProductSku] = useState([]);
   const [product, setProduct] = useState({});
   const [message, setMessage] = useState("");
@@ -44,89 +50,85 @@ const ProductSku = (props) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getListProductSkuByProductId(product_id));
+    dispatch(getListProductSkuByProductId(product_id))
+    dispatch(getSize())
+    dispatch(getColor())
   }, [dispatch]);
 
   useEffect(() => {
     setMessage(product_skus.messages);
   }, [product_skus.messages]);
-  
+
   useEffect(() => {
     setListProductSku(product_skus.listProductSku);
-    console.log(product_skus)
+
   }, [product_skus.listProductSku]);
   //show Modal
+  useEffect(() => {
+    setDatatable();
+  }, [listProductSku])
 
   const handleShowAdd = () => {
-    setName("");
-    setPrice(0);
-    setDiscount(0);
-    setQuantity(0);
-    setBrandId("");
-    setDescription("");
-    setProductPictures([]);
+    setProductId(null);
+    setStock(null);
+    setPrice(null);
+    setSize(null);
+    setColor(null);
+    setImageSku([])
     setShowAdd(true);
   };
 
   const handleCloseAdd = () => {
     const form = new FormData();
-    console.log(price, quantity, discount, description, brandId);
-    form.append("name", name);
+    form.append("product_id", product_id);
+    form.append("stock", stock);
     form.append("price", price);
-    form.append("discount", discount);
-    form.append("quantity", quantity);
-    form.append("description", description);
-    form.append("brandId", brandId);
-    for (let pic of productPictures) {
-      form.append("productPicture", pic);
-    }
-    dispatch(addProductSku(form));
+    form.append("size", size);
+    form.append("color", color);
+    form.append("image", imageSku[0]);
+    dispatch(addProductSku(form)).then(() => {
+      dispatch(getListProductSkuByProductId(product_id));
+    });
     setShowAdd(false);
-    setName("");
-    setPrice(0);
-    setQuantity(0);
-    setDescription("");
-    setBrandId("");
-    setProductPictures([]);
+    setProductId(null);
+    setStock(null);
+    setPrice(null);
+    setSize(null);
+    setColor(null);
+    setImageSku([])
   };
 
   const handleShowView = (e) => {
     const prod = product_skus.listProductSku.find(
-      (product) => product._id === e.target.value
+      (product_sku) => product_sku.id === Number(e.target.value)
     );
-    setName(prod.name);
-    setPrice(prod.price);
-    setDiscount(prod.discount);
-    setQuantity(prod.quantity);
-    const bra = brands.listBrand.find((brand) => brand._id === prod.brandId);
-    setBrandId(bra.name);
-    const cat = categories.listCategory.find(
-      (category) => category._id === bra.categoryId
-    );
-    setCategory(cat.name);
-    setReviews(prod.reviews);
-    setDescription(prod.description);
-    setProductPictures(prod.productPictures);
+    if (prod) {
+      setProductName(prod.product_name);
+      setStock(prod.stock);
+      setPrice(prod.price);
+      setSize(prod.size_id);
+      setColor(prod.color_id);
+      setImageSkuShow(prod.image.url)
+    }
     setShowView(true);
   };
+
   const handleCloseView = () => {
-    setName("");
-    setPrice(0);
-    setDiscount(0);
-    setQuantity(0);
-    setBrandId("");
-    setDescription("");
-    setReviews("");
-    setCategory("");
-    setProductPictures([]);
+    setProductId(null);
+    setStock(null);
+    setPrice(null);
+    setSize(null);
+    setColor(null);
+    setImageSku([]);
+    setImageSkuShow(null);
     setShowView(false);
   };
 
   const handleShowDelete = (event) => {
     const id = event.target.value;
     const prod = product_skus.listProductSku.find((product) => product._id === id);
-    setProduct(prod);
-    setName(prod.name);
+    // setProduct(prod);
+    // setName(prod.name);
     setShowDeleteModal(true);
   };
 
@@ -138,46 +140,40 @@ const ProductSku = (props) => {
   };
   const handleShowEdit = (event) => {
     const id = event.target.value;
-    const prod = product_skus.listProductSku.find((product) => product._id === id);
-    setProduct(prod);
-    setName(prod.name);
-    setPrice(prod.price);
-    setDiscount(prod.discount);
-    setQuantity(prod.quantity);
-    const bra = brands.listBrand.find((brand) => brand._id === prod.brandId);
-    setBrandId(prod.brandId);
-    const cat = categories.listCategory.find(
-      (category) => category._id === bra.categoryId
-    );
-    setCategory(cat._id);
-    setReviews(prod.reviews);
-    setDescription(prod.description);
-    setProductPictures([]);
+    const prod = product_skus.listProductSku.find((product_sku) => product_sku.id === Number(id));
+    if (prod) {
+      setProductSkuId(id);
+      setStock(prod.stock);
+      setPrice(prod.price);
+      setSize(prod.size_id);
+      setColor(prod.color_id);
+      setImageSku([]);
+    }
     setShowEditModal(true);
   };
 
   const handleCloseEdit = () => {
     const form = new FormData();
-    form.append("id", product._id);
-    form.append("name", name);
+    form.append("id", productSkuId)
+    form.append("product_id", product_id)
+    form.append("stock", stock);
     form.append("price", price);
-    form.append("quantity", quantity);
-    form.append("description", description);
-    form.append("brandId", brandId);
-    for (let pic of productPictures) {
-      form.append("productPicture", pic);
+    form.append("size", size);
+    form.append("color", color);
+    if (imageSku.length > 0) {
+      form.append("image", imageSku[0]);
     }
-    dispatch(updateProductSku(form));
-    setProduct({});
-    setName("");
-    setPrice(0);
-    setQuantity(0);
-    setDiscount(0);
-    setDescription("");
-    setBrandId("");
-    setProductPictures([]);
+    dispatch(updateProductSku(form)).then(() => {
+      dispatch(getListProductSkuByProductId(product_id));
+    });
     setShowEditModal(false);
-    setMessage("Edit Successfully!");
+    setProductSkuId(null)
+    setProductId(null);
+    setStock(null);
+    setPrice(null);
+    setSize(null);
+    setColor(null);
+    setImageSku([])
   };
 
   //selected
@@ -198,6 +194,11 @@ const ProductSku = (props) => {
   //   const date = convert_datetime_from_timestamp(timestamp)
   //   return date
   // }
+  const handerBack = (event) => {
+    setListProductSku([])
+    setDataProductSku([])
+    props.history.push("/manage-product")
+  }
 
   //row table
   const rowTable = (product_skus) => {
@@ -206,6 +207,7 @@ const ProductSku = (props) => {
       var element = {
         sr: index + 1,
         name: product_sku.product_name,
+        quantity: product_sku.stock,
         price: product_sku.price,
         size: product_sku.size,
         color: product_sku.color,
@@ -253,53 +255,62 @@ const ProductSku = (props) => {
     }
     return all;
   };
-  const data = {
-    columns: [
-      {
-        label: "No.",
-        field: "sr",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "Name",
-        field: "name",
-        sort: "asc",
-        width: 200,
-      },
-      {
-        label: "Price(VND)",
-        field: "price",
-        sort: "asc",
-        width: 50,
-      },
-      {
-        label: "Size",
-        field: "size",
-        sort: "asc",
-        width: 50,
-      },
-      {
-        label: "Color",
-        field: "color",
-        sort: "asc",
-        width: 50,
-      },
-      {
-        label: "Image",
-        field: "image",
-        sort: "asc",
-        width: 50,
-      },
-      {
-        label: "",
-        field: "btn",
-        sort: "asc",
-        width: 100,
-      },
-    ],
-    rows: rowTable(listProductSku),
-  };
+  const setDatatable = () => {
+    const data = {
+      columns: [
+        {
+          label: "No.",
+          field: "sr",
+          sort: "asc",
+          width: 150,
+        },
+        {
+          label: "Name",
+          field: "name",
+          sort: "asc",
+          width: 200,
+        },
+        {
+          label: "Quantity",
+          field: "quantity",
+          sort: "asc",
+          width: 50,
+        },
+        {
+          label: "Price(VND)",
+          field: "price",
+          sort: "asc",
+          width: 50,
+        },
+        {
+          label: "Size",
+          field: "size",
+          sort: "asc",
+          width: 50,
+        },
+        {
+          label: "Color",
+          field: "color",
+          sort: "asc",
+          width: 50,
+        },
+        {
+          label: "Image",
+          field: "image",
+          sort: "asc",
+          width: 50,
+        },
+        {
+          label: "",
+          field: "btn",
+          sort: "asc",
+          width: 100,
+        },
+      ],
+      rows: rowTable(listProductSku),
+    };
+    setDataProductSku(data);
+  }
 
   return (
     <Layout title="Manage product">
@@ -311,14 +322,25 @@ const ProductSku = (props) => {
               <div className="card">
                 <div className="card-header">
                   <div class="card-title">
-                    <button
+                    <button onClick={(e) => { handerBack(e) }}
                       className="btn btn-block bg-gradient-primary"
-                      onClick={handleShowAdd}
                     >
-                      New A Product SKU
+                      Back
                     </button>
                   </div>
+                  <div style={{ float: "right" }}>
+                    <div className="row">
+                      <button
+                        className="btn btn-block bg-gradient-primary"
+                        onClick={handleShowAdd}
+                      >
+                        New A Product SKU
+                      </button>
+
+                    </div>
+                  </div>
                 </div>
+
                 <div className="row justify-content-center">
                   <div style={{ marginTop: "5px", marginBottom: "-67px" }}>
                     {message !== "" ? (
@@ -364,7 +386,7 @@ const ProductSku = (props) => {
                       hover
                       // barReverse
                       noBottomColumns
-                      data={data}
+                      data={dataProductSku}
                     />
                   </div>
                 </div>
@@ -375,82 +397,76 @@ const ProductSku = (props) => {
         </div>
       </section>
 
-      <AddProductModal
+      <AddProductSkuModal
         show={showAdd}
         handleClose={() => {
           setShowAdd(false);
-          setProductPictures([]);
         }}
         onSubmit={handleCloseAdd}
-        modalTitle={"Add New Product"}
-        name={name}
-        setName={setName}
+        modalTitle={"Add New Product Sku"}
+        stock={stock}
+        setStock={setStock}
         price={price}
         setPrice={setPrice}
-        quantity={quantity}
-        setQuantity={setQuantity}
-        discount={discount}
-        setDiscount={setDiscount}
-        description={description}
-        setDescription={setDescription}
-        brandId={brandId}
-        category={category}
-        setCategory={setCategory}
-        setBrandId={setBrandId}
-        productPictures={productPictures}
-        setProductPictures={setProductPictures}
+        size={size}
+        setSize={setSize}
+        color={color}
+        listSize={listSize}
+        listColor={listColor}
+        setColor={setColor}
+        imageSku={imageSku}
+        setImageSku={setImageSku}
         listProductSku={listProductSku}
       />
-      <ViewProductModal
+      <ViewProductSkuModal
         show={showView}
         handleClose={handleCloseView}
         onSubmit={handleCloseView}
         modalTitle={"Product"}
-        name={name}
+        stock={stock}
+        setStock={setStock}
         price={price}
-        quantity={quantity}
-        discount={discount}
-        description={description}
-        brandId={brandId}
-        category={category}
-        productPictures={productPictures}
+        setPrice={setPrice}
+        size={size}
+        setSize={setSize}
+        color={color}
+        listSize={listSize}
+        listColor={listColor}
+        setColor={setColor}
+        imageSku={imageSkuShow}
         listProductSku={listProductSku}
       />
-      <DeleteProductModal
+      {/* <DeleteProductModal
         show={showDeleteModal}
         handleClose={() => {
           setShowDeleteModal(false);
-          setProduct({});
-          setName("");
+          // setProduct({});
+          // setName("");
         }}
         modalTitle={"Delete Product"}
         onSubmit={handleCloseDelete}
-        name={name}
-      />
-      <EditProductModal
+        // name={name}
+      /> */}
+      <EditProductSkuModal
         show={showEditModal}
         handleClose={() => {
           setShowEditModal(false);
-          setProduct({});
         }}
         onSubmit={handleCloseEdit}
-        modalTitle={"Edit Product"}
-        name={name}
-        setName={setName}
+        modalTitle={"Edit Product Sku"}
+        stock={stock}
+        setStock={setStock}
         price={price}
         setPrice={setPrice}
-        quantity={quantity}
-        setQuantity={setQuantity}
-        discount={discount}
-        setDiscount={setDiscount}
-        description={description}
-        setDescription={setDescription}
-        brandId={brandId}
-        category={category}
-        setCategory={setCategory}
-        setBrandId={setBrandId}
-        productPictures={productPictures}
-        setProductPictures={setProductPictures}
+        size={size}
+        setSize={setSize}
+        color={color}
+        listSize={listSize}
+        listColor={listColor}
+        setColor={setColor}
+        imageSku={imageSku}
+        setImageSku={setImageSku}
+        listProductSku={listProductSku}
         listProductSku={listProductSku}
       />
     </Layout>

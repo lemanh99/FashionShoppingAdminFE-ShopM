@@ -4,7 +4,7 @@ export const initialDataConstants = {
   GET_ALL_INITIAL_DATA_FAILURE: "GET_ALL_INITIAL_DATA_FAILURE",
 };
 
-export const authConstants ={
+export const authConstants = {
   LOGIN_REQUEST: "LOGIN_REQUEST",
   LOGIN_FAILURE: "LOGIN_FAILURE",
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
@@ -15,7 +15,7 @@ export const authConstants ={
 
 }
 
-export const userConstants ={
+export const userConstants = {
   GET_INFO_USER_REQUEST: "GET_INFO_USER_REQUEST",
   GET_INFO_USER_FAILURE: "GET_INFO_USER_FAILURE",
   GET_INFO_USER_SUCCESS: "GET_INFO_USER_SUCCESS",
@@ -44,7 +44,7 @@ export const adminConstants = {
   CHANGE_PASSWORD_REQUEST: "CHANGE_PASSWORD_REQUEST",
   CHANGE_PASSWORD_SUCCESS: "CHANGE_PASSWORD_SUCCESS",
   CHANGE_PASSWORD_FAILURE: "CHANGE_PASSWORD_FAILURE",
-  
+
 };
 
 export const customerConstants = {
@@ -158,3 +158,10 @@ export const orderConstants = {
 }
 
 
+export const masterConstants = {
+  GET_ALL_MASTER_REQUEST: "GET_ALL_MASTER_REQUEST",
+  GET_ALL_MASTER_SUCCESS: "GET_ALL_MASTER_SUCCESS",
+  GET_ALL_MASTER_SIZE_SUCCESS: "GET_ALL_MASTER_SIZE_SUCCESS",
+  GET_ALL_MASTER_COLOR_SUCCESS: "GET_ALL_MASTER_COLOR_SUCCESS",
+  GET_ALL_MASTER_FAILURE: "GET_ALL_MASTER_FAILURE",
+}

@@ -1,6 +1,6 @@
 // const baseUrl = process.env.API || "https://"
 //const baseUrl = "http://localhost:2000";
-const baseUrl = " http://10.8.15.46:8000";
+const baseUrl = " http://10.8.15.44:8000";
 
 export const api = `${baseUrl}/api/v1/`;
 

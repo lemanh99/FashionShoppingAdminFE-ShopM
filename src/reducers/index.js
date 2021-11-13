@@ -11,6 +11,7 @@ import brandReducer from "./BrandReducers/manage_brand_reducer";
 import productReducer from "./ProductReducers/manage_product";
 import productSkuReducer from "./ProductReducers/manage_product_sku";
 import orderReducer from "./OrderReducers/order.reducer";
+import masterReducer from "./MasterReducers/manage_master";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   product: productReducer,
   product_sku: productSkuReducer,
   order: orderReducer,
+  master: masterReducer,
   // page: pageReducer
 });
 

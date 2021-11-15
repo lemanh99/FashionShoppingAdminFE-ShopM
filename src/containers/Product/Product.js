@@ -9,6 +9,7 @@ import {
   getListProduct,
   updateProduct,
 } from "../../actions";
+import { getProductStatus } from "../../actions/Master/master.action";
 import Layout from "../../components/Layout";
 import Notification from "../../components/UI/Notification";
 import { convert_datetime_from_timestamp } from "../../utils";
@@ -21,76 +22,89 @@ const Product = () => {
   const products = useSelector((state) => state.product);
   const brands = useSelector((state) => state.brand);
   const categories = useSelector((state) => state.category);
+  const listProductStatus = useSelector((state) => state.master.product_status)
 
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [quantity, setQuantity] = useState(0);
-  const [description, setDescription] = useState("");
-  const [reviews, setReviews] = useState([]);
-  const [discount, setDiscount] = useState(0);
-  const [category, setCategory] = useState("");
-  const [brandId, setBrandId] = useState("");
-  const [productPictures, setProductPictures] = useState([]);
-  const [listProduct, setListProduct] = useState([]);
-  const [listBrand, setListBrand] = useState([]);
+  const [listProduct, setListProduct] = useState([])
+  const [status, setStatus] = useState([])
+  const [name, setName] = useState(null);
+  const [category, setCategory] = useState([])
+  const [descriptionDetail, setDescriptionDetail] = useState(null);
+  const [descriptionList, setDescriptionList] = useState(null);
+  const [searchWord, setSearchWord] = useState(null)
+  const [productStatusId, setProductStatusId] = useState(null)
   const [listCategory, setListCategory] = useState([]);
   const [product, setProduct] = useState({});
   const [message, setMessage] = useState("");
   const [showAdd, setShowAdd] = useState(false);
+  const [parentCategory, setParentCategory] = useState([]);
+  const [childCategory, setChildCategory] = useState([]);
+
   const [showView, setShowView] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
   //entries
-  const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [search, setSearch] = useState("");
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getListProduct());
+    dispatch(getProductStatus())
+    dispatch(getListCategory())
   }, [dispatch]);
   useEffect(() => {
     setMessage(products.messages);
   }, [products.messages]);
   useEffect(() => {
     setListProduct(products.listProduct);
-    setListBrand(brands.listBrand);
     setListCategory(categories.listCategory);
-  }, [products.listProduct, brands.listBrand, categories.listCategory]);
+  }, [products.listProduct, categories.listCategory]);
   //show Modal
 
   const handleShowAdd = () => {
-    setName("");
-    setPrice(0);
-    setDiscount(0);
-    setQuantity(0);
-    setBrandId("");
-    setDescription("");
-    setProductPictures([]);
+    setName(null);
+    setCategory([])
+    setDescriptionDetail(null);
+    setDescriptionList(null);
+    setSearchWord(null);
+    setProductStatusId(null);
     setShowAdd(true);
   };
 
   const handleCloseAdd = () => {
-    const form = new FormData();
-    console.log(price, quantity, discount, description, brandId);
-    form.append("name", name);
-    form.append("price", price);
-    form.append("discount", discount);
-    form.append("quantity", quantity);
-    form.append("description", description);
-    form.append("brandId", brandId);
-    for (let pic of productPictures) {
-      form.append("productPicture", pic);
+    // const form = new FormData();
+    // console.log(price, quantity, discount, description, brandId);
+    // form.append("name", name);
+    // form.append("price", price);
+    // form.append("discount", discount);
+    // form.append("quantity", quantity);
+    // form.append("description", description);
+    // form.append("brandId", brandId);
+    // for (let pic of productPictures) {
+    //   form.append("productPicture", pic);
+    // }
+    const product = {
+      "name": name,
+      "category": [category],
+      "description_detail": descriptionDetail,
+      "description_list": descriptionList,
+      "search_word": searchWord,
+      "product_status_id": productStatusId,
     }
-    dispatch(addProduct(form));
+    console.log(product);
+    dispatch(addProduct(product)).then(() => {
+      dispatch(getListProduct())
+    });
     setShowAdd(false);
-    setName("");
-    setPrice(0);
-    setQuantity(0);
-    setDescription("");
-    setBrandId("");
-    setProductPictures([]);
+    setName(null);
+    setCategory([])
+    setDescriptionDetail(null);
+    setDescriptionList(null);
+    setSearchWord(null);
+    setProductStatusId(null);
+    setChildCategory([])
+    setParentCategory([])
   };
 
   const handleShowView = (e) => {
@@ -98,36 +112,26 @@ const Product = () => {
       (product) => product._id === e.target.value
     );
     setName(prod.name);
-    setPrice(prod.price);
-    setDiscount(prod.discount);
-    setQuantity(prod.quantity);
-    const bra = brands.listBrand.find((brand) => brand._id === prod.brandId);
-    setBrandId(bra.name);
-    const cat = categories.listCategory.find(
-      (category) => category._id === bra.categoryId
-    );
-    setCategory(cat.name);
-    setReviews(prod.reviews);
-    setDescription(prod.description);
-    setProductPictures(prod.productPictures);
+    setCategory(prod.category);
+    setDescriptionDetail(prod.description_detail);
+    setDescriptionList(prod.description_list);
+    setSearchWord(prod.search_word);
+    setProductStatusId(prod.product_status_id);
     setShowView(true);
   };
   const handleCloseView = () => {
-    setName("");
-    setPrice(0);
-    setDiscount(0);
-    setQuantity(0);
-    setBrandId("");
-    setDescription("");
-    setReviews("");
-    setCategory("");
-    setProductPictures([]);
+    setName(null);
+    setCategory([])
+    setDescriptionDetail(null);
+    setDescriptionList(null);
+    setSearchWord(null);
+    setProductStatusId(null);
     setShowView(false);
   };
 
   const handleShowDelete = (event) => {
     const id = event.target.value;
-    const prod = products.listProduct.find((product) => product._id === id);
+    const prod = products.listProduct.find((product) => product.id === id);
     setProduct(prod);
     setName(prod.name);
     setShowDeleteModal(true);
@@ -144,70 +148,35 @@ const Product = () => {
     const prod = products.listProduct.find((product) => product._id === id);
     setProduct(prod);
     setName(prod.name);
-    setPrice(prod.price);
-    setDiscount(prod.discount);
-    setQuantity(prod.quantity);
-    const bra = brands.listBrand.find((brand) => brand._id === prod.brandId);
-    setBrandId(prod.brandId);
-    const cat = categories.listCategory.find(
-      (category) => category._id === bra.categoryId
-    );
-    setCategory(cat._id);
-    setReviews(prod.reviews);
-    setDescription(prod.description);
-    setProductPictures([]);
+    setCategory(prod.category);
+    setDescriptionDetail(prod.description_detail);
+    setDescriptionList(prod.description_list);
+    setSearchWord(prod.search_word);
+    setProductStatusId(prod.product_status_id);
     setShowEditModal(true);
   };
 
   const handleCloseEdit = () => {
-    const form = new FormData();
-    form.append("id", product._id);
-    form.append("name", name);
-    form.append("price", price);
-    form.append("quantity", quantity);
-    form.append("description", description);
-    form.append("brandId", brandId);
-    for (let pic of productPictures) {
-      form.append("productPicture", pic);
+    const product = {
+      "name": name,
+      "category": [category],
+      "description_detail": descriptionDetail,
+      "description_list": descriptionList,
+      "search_word": searchWord,
+      "product_status_id": productStatusId,
     }
-    dispatch(updateProduct(form));
+    dispatch(updateProduct(product));
     setProduct({});
-    setName("");
-    setPrice(0);
-    setQuantity(0);
-    setDiscount(0);
-    setDescription("");
-    setBrandId("");
-    setProductPictures([]);
+    setName(null);
+    setCategory([])
+    setDescriptionDetail(null);
+    setDescriptionList(null);
+    setSearchWord(null);
+    setProductStatusId(null);
     setShowEditModal(false);
     setMessage("Edit Successfully!");
   };
 
-  const selectList = (event) => {
-    const value = event.target.value;
-    setSelectedBrand(value);
-
-    let list = [];
-    if (value) {
-      list = list.concat(
-        products.listProduct.filter((product) =>
-          product.brandId.toLowerCase().includes(value.toLowerCase())
-        )
-      );
-    } else {
-      const lstBrand = brands.listBrand.filter((brand) =>
-        brand.categoryId.toLowerCase().includes(selectedCategory.toLowerCase())
-      );
-      for (let bra of lstBrand) {
-        list = list.concat(
-          products.listProduct.filter((product) =>
-            product.brandId.toLowerCase().includes(bra._id.toLowerCase())
-          )
-        );
-      }
-    }
-    setListProduct(list);
-  };
   //selected
   const searchList = (event) => {
     const value = event.target.value;
@@ -234,7 +203,7 @@ const Product = () => {
       var element = {
         sr: index + 1,
         name: <Link to={`/manage-product-sku/${product.id}`}>{product.name}</Link>,
-        price: product.price,
+        category: product.category_name,
         status: product.status_name,
         create_date: convert_datetime_from_timestamp(product.created_at),
         update_date: convert_datetime_from_timestamp(product.updated_at),
@@ -344,26 +313,6 @@ const Product = () => {
                       <div className="col-md-6">
                         <select
                           className="form-control "
-                          value={selectedBrand}
-                          style={{ backgroundColor: "#e9ecef" }}
-                          onChange={(e) => selectList(e)}
-                        >
-                          <option value="">Select Brand</option>
-                          {listBrand
-                            .filter((brand) =>
-                              brand.categoryId
-                                .toLowerCase()
-                                .includes(selectedCategory.toLowerCase())
-                            )
-                            .map((brand) => (
-                              <option value={brand._id}>{brand.name}</option>
-                            ))}
-                          <option value="">All</option>
-                        </select>
-                      </div>
-                      <div className="col-md-6">
-                        <select
-                          className="form-control "
                           value={selectedCategory}
                           style={{ backgroundColor: "#e9ecef", width: "164px" }}
                           onChange={(e) => setSelectedCategory(e.target.value)}
@@ -372,10 +321,10 @@ const Product = () => {
                           cat
                           {listCategory
                             ? listCategory.map((category) => (
-                                <option value={category._id}>
-                                  {category.name}
-                                </option>
-                              ))
+                              <option value={category._id}>
+                                {category.name}
+                              </option>
+                            ))
                             : null}
                           <option value="">All</option>
                         </select>
@@ -443,31 +392,38 @@ const Product = () => {
         show={showAdd}
         handleClose={() => {
           setShowAdd(false);
-          setProductPictures([]);
+          setName(null);
+          setCategory([])
+          setDescriptionDetail(null);
+          setDescriptionList(null);
+          setSearchWord(null);
+          setProductStatusId(null);
+          setChildCategory([])
+          setParentCategory([])
         }}
         onSubmit={handleCloseAdd}
         modalTitle={"Add New Product"}
         name={name}
         setName={setName}
-        price={price}
-        setPrice={setPrice}
-        quantity={quantity}
-        setQuantity={setQuantity}
-        discount={discount}
-        setDiscount={setDiscount}
-        description={description}
-        setDescription={setDescription}
-        brandId={brandId}
         category={category}
         setCategory={setCategory}
-        setBrandId={setBrandId}
-        listBrand={listBrand}
-        productPictures={productPictures}
+        descriptionDetail={descriptionDetail}
+        setDescriptionDetail={setDescriptionDetail}
+        descriptionList={descriptionList}
+        setDescriptionList={setDescriptionList}
+        searchWord={searchWord}
+        setSearchWord={setSearchWord}
+        productStatusId={productStatusId}
+        setProductStatusId={setProductStatusId}
         listCategory={listCategory}
-        setProductPictures={setProductPictures}
         listProduct={listProduct}
+        listProductStatus={listProductStatus}
+        childCategory={childCategory}
+        setChildCategory={setChildCategory}
+        parentCategory={parentCategory}
+        setParentCategory={setParentCategory}
       />
-      <ViewProductModal
+      {/* <ViewProductModal
         show={showView}
         handleClose={handleCloseView}
         onSubmit={handleCloseView}
@@ -522,7 +478,7 @@ const Product = () => {
         listCategory={listCategory}
         setProductPictures={setProductPictures}
         listProduct={listProduct}
-      />
+      /> */}
     </Layout>
   );
 };

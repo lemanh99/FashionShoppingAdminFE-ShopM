@@ -28,12 +28,6 @@ const AddCategoryModal = (props) => {
     );
     checkName ? setMessage("Name already exists") : setMessage("");
   };
-  // const changeImage = (event) => {
-  //   document.getElementById("img").src = window.URL.createObjectURL(
-  //     event.target.files[0]
-  //   );
-  //   setCategoryImage(event.target.files[0]);
-  // };
   return (
     <NewModal
       show={show}
@@ -58,51 +52,6 @@ const AddCategoryModal = (props) => {
             required
           />
         </div>
-        {parentCategory
-          ? (
-            <div className="form-group">
-              <label>Category</label>
-              <select
-                name="category"
-                id="category"
-                // value={category}
-                className="form-control"
-                required
-              // onChange={(e) => selectCategory(e)}
-              >
-                <option value="">Select 1 category</option>
-                {parentCategory.map((category) => (
-                  <option value={category.id}>{category.category_name}</option>
-                ))}
-
-              </select>
-            </div>
-          ) : null}
-        {/* <div class="form-group">
-          <label for="customFile">Image</label>
-          <div className="row" style={{ marginBottom: "5px" }}>
-            <img
-              id="img"
-              src=""
-              width={categoryImage.name ? "100" : null}
-              height={categoryImage.name ? "100" : null}
-              alt="Image category"
-              aria-hidden
-            />
-          </div>
-          <div className="custom-file">
-            <input
-              type="file"
-              className="custom-file-input"
-              id="customFile"
-              accept="image/png, image/jpeg"
-              onChange={changeImage}
-            />
-            <label className="custom-file-label" for="customFile">
-              {categoryImage.name ? categoryImage.name : "Choose file"}
-            </label>
-          </div>
-        </div> */}
       </div>
     </NewModal>
   );

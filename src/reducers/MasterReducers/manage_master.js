@@ -3,6 +3,7 @@ import { masterConstants } from "../../actions/constants";
 const initState = {
     size: [],
     color: [],
+    product_status: [],
     loading: false,
     error: null,
     messages: null,
@@ -42,6 +43,16 @@ export default (state = initState, action) => {
                 ...state,
                 loading: false,
                 color: action.payload.color,
+                error: null,
+                messages: null,
+            };
+            break;
+
+        case masterConstants.GET_ALL_MASTER_PRODUCT_STATUS_SUCCESS:
+            state = {
+                ...state,
+                loading: false,
+                product_status: action.payload.product_status,
                 error: null,
                 messages: null,
             };

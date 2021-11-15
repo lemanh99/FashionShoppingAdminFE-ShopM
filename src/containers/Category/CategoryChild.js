@@ -57,9 +57,12 @@ const CategoryChild = (props) => {
     };
     const handleCloseAdd = () => {
         const category = {
+            "parent_category_id": id,
             "category_name": name
         }
-        dispatch(addCatgeory(category));
+        dispatch(addCatgeory(category)).then((e)=>{
+            dispatch(getListCategoryChild(id));
+        });
         setShowAdd(false);
         setName("");
     };
@@ -89,12 +92,18 @@ const CategoryChild = (props) => {
         const form = new FormData();
         form.append("id", category.id);
         form.append("category_name", name);
-        dispatch(updateCategory(form));
+        dispatch(updateCategory(form)).then((e)=>{
+            dispatch(getListCategoryChild(id));
+        });;
         setCategory({});
         setName("");
         setShowEditModal(false);
         setMessage("Edit Successfully!");
     };
+    // }
+    const handerBack = (event) => {
+        props.history.push("/manage-category")
+    }
 
     //row table
     const rowTable = (categories) => {
@@ -172,14 +181,24 @@ const CategoryChild = (props) => {
                         <div className="col-md-3"></div>
                         <div className="col-md-6">
                             <div className="card">
+
                                 <div className="card-header">
                                     <div class="card-title">
-                                        <button
+                                        <button onClick={(e) => { handerBack(e) }}
                                             className="btn btn-block bg-gradient-primary"
-                                            onClick={handleShowAdd}
                                         >
-                                            New A Category For {parentName}
+                                            Back
                                         </button>
+                                    </div>
+                                    <div style={{ float: "right" }}>
+                                        <div className="row">
+                                            <button
+                                                className="btn btn-block bg-gradient-primary"
+                                                onClick={handleShowAdd}
+                                            >
+                                                New A Category For {parentName}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="row justify-content-center">

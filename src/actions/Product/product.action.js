@@ -29,7 +29,7 @@ export const addProduct = (form) => {
     });
     const res = await axios.post(`/product/create/`, form);
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       dispatch(getListProduct());
       const { message } = res.data;
       dispatch({
@@ -72,7 +72,7 @@ export const updateProduct = (form) => {
     dispatch({ type: productConstants.UPDATE_PRODUCT_REQUEST });
     const res = await axios.post(`/product/update/${form.get('id')}`, form );
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: productConstants.UPDATE_PRODUCT_SUCCESS,

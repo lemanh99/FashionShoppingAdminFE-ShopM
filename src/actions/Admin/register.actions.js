@@ -11,7 +11,7 @@ export const signup = (user) => {
       ...user,
     });
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       dispatch(getListAdmin());
       const { message } = res.data;
       dispatch({

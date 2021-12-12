@@ -1,6 +1,7 @@
 import { MDBDataTable } from "mdbreact";
 import React from "react";
 import TabPaneNew from "../../../components/UI/TabPane";
+import { convert_date_from_timestamp } from "../../../utils/datetime";
 import { ConvertIOStoDate } from "./ConvertStringToTime";
 const CancelTable = (props) => {
   const { listOrder, listCustomer, handleShow } = props;
@@ -8,37 +9,32 @@ const CancelTable = (props) => {
     const all = [];
     let index = 0;
     for (let order of orders) {
-      if (order.paymentStatus === "cancelled") {
-        const customer = listCustomer.find(
-          (customer) => customer._id === order.customerId
-        );
-        var element = {
-          sr: ++index,
-          invoice: order.codeBill,
-          customer: customer
-            ? customer.firstName + " " + customer.lastName
-            : null,
-          total_products: order.productDetail.length,
-          total_amount: order.totalAmount,
-          date: ConvertIOStoDate(order.createdAt),
-          date_cancel:ConvertIOStoDate(order.updatedAt),
-          status: <span class="badge badge-danger">Cancelled</span>,
-          btn: (
-            <div class="project-actions  text-center">
-              <button
-                class="btn btn-primary btn-sm"
-                value={order._id}
-                onClick={handleShow}
-                style={{ marginRight: "5px" }}
-              >
-                <i class="fas fa-folder" style={{marginRight: '4px'}}></i>
-                View
-              </button>
-            </div>
-          ),
-        };
-        all.push(element);
-      }
+      var element = {
+        sr: ++index,
+        // invoice: order.order_code,
+        customer: order.full_name,
+        // total_products: order.productDetail.length,
+        total_amount: order.payment_total,
+        date: convert_date_from_timestamp(order.created_at),
+        date_cancel: convert_date_from_timestamp(order.update_at),
+        status: <span class="badge badge-danger">Cancelled</span>,
+        payment_status:order.payment_status_name,
+        payment_method:order.payment_method,
+        btn: (
+          <div class="project-actions  text-center">
+            <button
+              class="btn btn-primary btn-sm"
+              value={order.order_code}
+              onClick={handleShow}
+              style={{ marginRight: "5px" }}
+            >
+              <i class="fas fa-folder" style={{ marginRight: '4px' }}></i>
+              View
+            </button>
+          </div>
+        ),
+      };
+      all.push(element);
     }
     return all;
   };
@@ -50,23 +46,17 @@ const CancelTable = (props) => {
         sort: "asc",
         width: 150,
       },
-      {
-        label: "Invoice",
-        field: "invoice",
-        sort: "asc",
-        width: 200,
-      },
+      // {
+      //   label: "Invoice",
+      //   field: "invoice",
+      //   sort: "asc",
+      //   width: 200,
+      // },
       {
         label: "Customer",
         field: "customer",
         sort: "asc",
         width: 200,
-      },
-      {
-        label: "Total products",
-        field: "total_products",
-        sort: "asc",
-        width: 50,
       },
       {
         label: "Total amount",
@@ -83,6 +73,18 @@ const CancelTable = (props) => {
       {
         label: "Cancelled date",
         field: "date_cancel",
+        sort: "asc",
+        width: 50,
+      },
+      {
+        label: "Payment status",
+        field: "payment_status",
+        sort: "asc",
+        width: 50,
+      },
+      {
+        label: "Payment method",
+        field: "payment_method",
         sort: "asc",
         width: 50,
       },

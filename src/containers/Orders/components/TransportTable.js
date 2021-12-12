@@ -3,10 +3,8 @@ import React from "react";
 import TabPaneNew from "../../../components/UI/TabPane";
 import { convert_date_from_timestamp } from "../../../utils/datetime";
 import { ConvertIOStoDate } from "./ConvertStringToTime";
-
-const PendingTable = (props) => {
+const TransportTable = (props) => {
   const { listOrder, handleShow } = props;
-
   const rowTable = (orders) => {
     const all = [];
     let index = 0;
@@ -18,35 +16,23 @@ const PendingTable = (props) => {
         // total_products: order.productDetail.length,
         total_amount: order.payment_total,
         date: convert_date_from_timestamp(order.created_at),
-        payment_status: order.payment_status_name,
-        order_status: order.order_status_name,
-        payment_method: order.payment_method,
+        date_completed: convert_date_from_timestamp(order.updated_at),
+        status: <span class="badge badge-success">Transported</span>,
         btn: (
           <div class="project-actions  text-center">
             <button
               class="btn btn-primary btn-sm"
-              value={order.order_code}
+              value={order.order_code }
               onClick={handleShow}
               style={{ marginRight: "5px" }}
             >
-              <i class="fas fa-folder" style={{ marginRight: "4px" }}></i>
+              <i class="fas fa-folder" style={{ marginRight: '4px' }}></i>
               View
             </button>
-
-            {/* <button
-                class="btn btn-danger btn-sm"
-                value={order._id}
-                // onClick={handleShowDelete}
-                style={{ marginRight: "5px" }}
-              >
-                <i class="fas fa-trash" style={{ marginRight: "4px" }}></i>
-                Cancel
-              </button> */}
           </div>
         ),
       };
       all.push(element);
-
     }
     return all;
   };
@@ -71,34 +57,34 @@ const PendingTable = (props) => {
         width: 200,
       },
       {
-        label: "Total Price",
+        label: "Total products",
+        field: "total_products",
+        sort: "asc",
+        width: 50,
+      },
+      {
+        label: "Total amount",
         field: "total_amount",
         sort: "asc",
         width: 50,
       },
       {
-        label: "Date",
+        label: "Date order",
         field: "date",
         sort: "asc",
         width: 50,
       },
       {
-        label: "Order status",
-        field: "order_status",
+        label: "Date success",
+        field: "date_completed",
         sort: "asc",
         width: 50,
       },
       {
-        label: "Payment status",
-        field: "payment_status",
+        label: "Status",
+        field: "status",
         sort: "asc",
-        width: 50,
-      },
-      {
-        label: "Payment method",
-        field: "payment_method",
-        sort: "asc",
-        width: 50,
+        width: 200,
       },
       {
         label: "",
@@ -127,4 +113,4 @@ const PendingTable = (props) => {
   );
 };
 
-export default PendingTable;
+export default TransportTable;

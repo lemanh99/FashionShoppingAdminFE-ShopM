@@ -31,7 +31,7 @@ export const register = (user) => {
       ...user,
     });
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       dispatch(getListCustomer());
       const { message } = res.data;
       dispatch({

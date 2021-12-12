@@ -5,7 +5,7 @@ export const ChangeInformation = (data) => {
   return async (dispatch) => {
     dispatch({ type: adminConstants.CHANGE_INFORMATION_REQUEST });
     const res = await axios.put(`admin/${data.id}/change-information`, { data });
-    if (res.status === 201) {
+    if (res.status === 200) {
       const { message, user } = res.data;
       dispatch({
         type: adminConstants.CHANGE_INFORMATION_SUCCESS,
@@ -34,8 +34,8 @@ export const ChangeInformation = (data) => {
 export const ChangePassword = (data) => {
   return async (dispatch) => {
     dispatch({ type: adminConstants.CHANGE_PASSWORD_REQUEST });
-    const res = await axios.put(`admin/${data.id}/change-password`, { data });
-    if (res.status === 201) {
+    const res = await axios.post(`user/password/`, { ...data });
+    if (res.status === 200) {
       const { message} = res.data;
       dispatch({
         type: adminConstants.CHANGE_PASSWORD_SUCCESS,

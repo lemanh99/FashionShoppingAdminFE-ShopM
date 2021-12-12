@@ -40,7 +40,7 @@ export const orderShiped = (id) => {
   return async (dispatch) => {
     console.log("cjhay day", id);
     const res = await axios.post(`/confirm-shiped/${id}`);
-    if (res.status === 201) {
+    if (res.status === 200) {
       dispatch(getOrders());
     } else {
       const { error } = res.data;
@@ -52,7 +52,7 @@ export const orderShiped = (id) => {
 export const orderCanceled = (id) => {
   return async (dispatch) => {
     const res = await axios.post(`/confirm-canceled-by-admin/${id}`);
-    if (res.status === 201) {
+    if (res.status === 200) {
       dispatch(getOrders());
     } else {
       const { error } = res.data;

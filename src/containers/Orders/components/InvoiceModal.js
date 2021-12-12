@@ -1,9 +1,10 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import { ConvertIOStoDate } from "./ConvertStringToTime";
+import { getAddressVietNam } from "../../../utils/address";
+import { convert_date_from_timestamp } from "../../../utils/datetime";
 
 const InvoiceModal = (props) => {
-  const { order, customer, handleShiped, handleCancel } = props;
+  const { order, customer, handleShiped, handleCancel, addressApi } = props;
   const print = () => {
     var content = document.getElementById("printarea");
     var pri = document.getElementById("ifmcontentstoprint").contentWindow;
@@ -13,6 +14,8 @@ const InvoiceModal = (props) => {
     pri.focus();
     pri.print();
   };
+  const shipping = order.shipping;
+  const orderItems = order.order_item;
   const status = order.orderStatus
     ? order.orderStatus.find((status) => status.isCompleted === true)
     : null;
@@ -41,7 +44,7 @@ const InvoiceModal = (props) => {
                   <div className="row">
                     <div className="col-12">
                       <h4>
-                        <i className="fas fa-globe" /> Mobile Store
+                        <i className="fas fa-globe" /> ShopM
                         <small className="float-right">
                           Date:{" "}
                           {date.getDate() +
@@ -59,13 +62,13 @@ const InvoiceModal = (props) => {
                     <div className="col-sm-4 invoice-col">
                       From
                       <address>
-                        <strong>Shop </strong>
+                        <strong>ShopM</strong>
                         <br />
-                        Da Nang City, VietName
+                        Da Nang City, Viet Nam
                         <br />
                         Phone: 082292000
                         <br />
-                        Email: info@mobilestore.com
+                        Email: info@shopm.com
                       </address>
                     </div>
                     {/* /.col */}
@@ -73,15 +76,15 @@ const InvoiceModal = (props) => {
                       To
                       <address>
                         <strong>
-                          {customer.firstName + " " + customer.lastName}
+                          {shipping ? (shipping.first_name + " " + shipping.last_name) : null}
                         </strong>
                         <br />
-                        Address: {customer.address ? customer.address : null}
+                        Address: {shipping ? (shipping.street + "," + getAddressVietNam(addressApi, shipping.city, shipping.district, shipping.village)) : null}
                         <br />
                         Phone:{" "}
-                        {customer.phoneNumber ? customer.phoneNumber : null}
+                        {shipping ? (shipping.phone_number) : null}
                         <br />
-                        Email: {customer.email ? customer.email : null}
+                        Email:{" "} {shipping ? (shipping.email) : null}
                       </address>
                     </div>
                     {/* /.col */}
@@ -89,9 +92,9 @@ const InvoiceModal = (props) => {
                       {/* <b>Invoice #007612</b> */}
                       <br />
                       <br />
-                      <b>Order ID:</b> {order.codeBill}
+                      <b>Order ID:{" "}</b> {order.order_code}
                       <br />
-                      <b>Order date:</b> {ConvertIOStoDate(order.createdAt)}
+                      <b>Order date:{" "}</b> {convert_date_from_timestamp(order.order_date / 1000)}
                       <br />
                     </div>
                     {/* /.col */}
@@ -109,16 +112,16 @@ const InvoiceModal = (props) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {order.productDetail
-                            ? order.productDetail.map((product, index) => (
-                                <tr>
-                                  <td>{index}</td>
-                                  <td>{product._id}</td>
-                                  <td>{product.purchasedQty}</td>
+                          {orderItems
+                            ? orderItems.map((product, index) => (
+                              <tr>
+                                <td>{index}</td>
+                                <td><a href={`http://localhost:3000/shop/${product.product_id}`} target="_blank">{product.product_name}</a></td>
+                                <td>{product.quantity}</td>
 
-                                  <td>{product.payablePrice}</td>
-                                </tr>
-                              ))
+                                <td>{product.price}</td>
+                              </tr>
+                            ))
                             : null}
                         </tbody>
                       </table>
@@ -129,42 +132,40 @@ const InvoiceModal = (props) => {
                   <div className="row">
                     <div className="col-6">
                       <p>
-                        <b>Payment Methods:</b>
+                        <b>Payment Methods:{" "}</b>
 
-                        {order.paymentType === "cod"
+                        {order.payment_method === "COD"
                           ? "Cash to deliver"
                           : "Card online"}
                       </p>
                       <p>
-                        <b>Payment Status :</b>
+                        <b>Payment Status :{" "}</b>
 
-                        {order.paymentStatus}
+                        {order.payment_status_name}
                       </p>
-                      {order.paymentStatus === "pending" ? (
-                        <p>
-                          <b>Order Status :</b>
-                          {status ? status.type : null}
-                        </p>
-                      ) : null}
+                      <p>
+                        <b>Order Status :{" "}</b>
+                        {order.order_status_name}
+                      </p>
                     </div>
                     {/* /.col */}
                     <div className="col-6">
-                      <p className="lead">Amount Due 2/22/2014</p>
+                      {/* <p className="lead">Amount Due 2/22/2014</p> */}
                       <div className="table-responsive">
                         <table className="table">
                           <tbody>
                             <tr>
                               <th style={{ width: "50%" }}>Subtotal:</th>
-                              <td>${order.totalAmount}</td>
+                              <td>{order.payment_total}VND</td>
                             </tr>
 
                             <tr>
-                              <th>Shipping:</th>
-                              <td>$0</td>
+                              <th>Fee Shipping:</th>
+                              <td>{order.delivery_fee_total}VND</td>
                             </tr>
                             <tr>
                               <th>Total:</th>
-                              <td>${order.totalAmount}</td>
+                              <td>{order.subtotal}VND</td>
                             </tr>
                           </tbody>
                         </table>

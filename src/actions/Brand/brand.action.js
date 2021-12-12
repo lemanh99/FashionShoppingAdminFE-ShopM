@@ -29,7 +29,7 @@ export const addBrand = (form) => {
     });
     const res = await axios.post(`/brand/create`, form);
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       dispatch(getListBrand());
       const { message } = res.data;
       dispatch({
@@ -73,7 +73,7 @@ export const updateBrand = (form) => {
     dispatch({ type: brandConstants.UPDATE_BRAND_REQUEST });
     const res = await axios.post(`/brand/update/${id}`, form);
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: brandConstants.UPDATE_BRAND_SUCCESS,

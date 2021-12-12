@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { inforUser } from "../../actions";
 import {
   ChangeInformation,
   ChangePassword,
@@ -10,9 +11,10 @@ import Notification from "../../components/UI/Notification";
 const Settings = (props) => {
   const setting = useSelector((state) => state.setting_admin);
   const auth = useSelector((state) => state.auth);
-  const [firstName, setFirstName] = useState(auth.user.firstName);
-  const [lastName, setLastName] = useState(auth.user.lastName);
-  const [email, setEmail] = useState(auth.user.email);
+  const user = useSelector((state) => state.user.infor)
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
+  const [email, setEmail] = useState(null);
   const [password, setPassword] = useState("");
   const [repassword, setRePassword] = useState("");
   const [message, setMessage] = useState("");
@@ -20,7 +22,14 @@ const Settings = (props) => {
   const dispatch = useDispatch();
   useEffect(() => {
     setMessage("");
+    dispatch(inforUser())
   }, []);
+
+  useEffect(() => {
+    setFirstName(user.firstName);
+    setLastName(user.lastName);
+    setEmail(user.email);
+  }, [user])
 
   useEffect(() => {
     if (!setting.loading) {
@@ -42,8 +51,7 @@ const Settings = (props) => {
   const ChangePass = (e) => {
     e.preventDefault();
     const pass = {
-      id: auth.user._id,
-      password,
+      password: password,
     };
     dispatch(ChangePassword(pass));
     setMessage("Update Passsword Success");

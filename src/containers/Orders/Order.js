@@ -8,14 +8,24 @@ import { useDispatch, useSelector } from "react-redux";
 import CancelTable from "./components/CancelTable";
 import CompleteTable from "./components/CompleteTable";
 import InvoiceModal from "./components/InvoiceModal";
+import axiosIntance from "../../helpers/axios";
+import { getAddressVietNam } from "../../utils/address";
+import axios from "axios";
+import TransportTable from "./components/TransportTable";
 
 const Order = () => {
   const orders = useSelector((state) => state.order);
+  const orderCanceled = useSelector((state) => state.order.cancelled)
+  const orderReceived = useSelector((state) => state.order.received)
+  const orderTransported = useSelector((state) => state.order.transported)
+  const orderDelivered = useSelector((state) => state.order.delivered)
+
   const customers = useSelector((state) => state.customer);
   const [key, setKey] = useState("1");
   const [show, setShow] = useState(false);
   const [order, setOrder] = useState([]);
   const [customer, setCustomer] = useState([]);
+  const [addressApi, setAddressApi]= useState([]);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -23,6 +33,16 @@ const Order = () => {
     dispatch(getListCustomer());
   }, [dispatch]);
 
+  useEffect(() => {
+    getCountry()
+  }, [])
+
+  async function getCountry(){
+    const res = await axios.get('https://provinces.open-api.vn/api/?depth=3')
+    if(res){
+      setAddressApi(res.data)
+    }
+}
   const handleShiped = (event) => {
     dispatch(orderShiped(event.target.value));
     setShow(false);
@@ -36,19 +56,20 @@ const Order = () => {
     setCustomer([]);
     setOrder([]);
   };
+
+
   const handleShow = (event) => {
-    const id = event.target.value;
-    const ord = orders.orders.find((order) => order._id === id);
-    setOrder(ord);
-    if (ord) {
-      const cus = customers.listCustomer.find(
-        (customer) => customer._id === ord.customerId
-      );
-      setCustomer(cus);
-    }
+    const orderCode = event.target.value;
+    axiosIntance.get(`order/admin/detail/${orderCode}`).then((res)=>{
+      const { data } = res.data;
+      setOrder(data);
+      setShow(true);
+    })
+    
+    // setShipping(ord.shipping)
 
     // const prod = products.listProduct.find((product) => product._id === id);
-    setShow(true);
+    
   };
   const handleClose = () => {
     setShow(false);
@@ -69,8 +90,7 @@ const Order = () => {
                 >
                   <Tab eventKey="1" title="Approval">
                     <PendingTable
-                      listOrder={orders.orders}
-                      listCustomer={customers.listCustomer}
+                      listOrder={orderReceived}
                       show={show}
                       handleShow={handleShow}
                       
@@ -78,16 +98,21 @@ const Order = () => {
                   </Tab>
                   <Tab eventKey="2" title="Cancelled">
                     <CancelTable
-                      listOrder={orders.orders}
-                      listCustomer={customers.listCustomer}
+                      listOrder={orderCanceled}
                       show={show}
                       handleShow={handleShow}
                     />
                   </Tab>
-                  <Tab eventKey="3" title="Completed">
+                  <Tab eventKey="3" title="Transported">
+                    <TransportTable
+                      listOrder={orderTransported}
+                      show={show}
+                      handleShow={handleShow}
+                    />
+                  </Tab>
+                  <Tab eventKey="4" title="Completed">
                     <CompleteTable
-                      listOrder={orders.orders}
-                      listCustomer={customers.listCustomer}
+                      listOrder={orderDelivered}
                       show={show}
                       handleShow={handleShow}
                     />
@@ -106,6 +131,7 @@ const Order = () => {
           customer={customer}
           handleShiped = {handleShiped}
           handleCancel = {handleCancel}
+          addressApi={addressApi}
         />
       ) : null}
     </Layout>

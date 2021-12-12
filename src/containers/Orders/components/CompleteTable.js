@@ -1,48 +1,38 @@
 import { MDBDataTable } from "mdbreact";
 import React from "react";
 import TabPaneNew from "../../../components/UI/TabPane";
+import { convert_date_from_timestamp } from "../../../utils/datetime";
 import { ConvertIOStoDate } from "./ConvertStringToTime";
 const CompleteTable = (props) => {
-  const { listOrder, listCustomer, handleShow } = props;
+  const { listOrder, handleShow } = props;
   const rowTable = (orders) => {
     const all = [];
     let index = 0;
     for (let order of orders) {
-      const status = order.orderStatus
-      ? order.orderStatus.find((status) => status.isCompleted === true)
-      : null;
-      if(status){      if (status.type === "delivered") {
-        const customer = listCustomer.find(
-          (customer) => customer._id === order.customerId
-        );
-        var element = {
-          sr: ++index,
-          invoice: order.codeBill,
-          customer: customer
-            ? customer.firstName + " " + customer.lastName
-            : null,
-          total_products: order.productDetail.length,
-          total_amount: order.totalAmount,
-          date: ConvertIOStoDate(order.createdAt),
-          date_completed: ConvertIOStoDate(order.updatedAt),
-          status: <span class="badge badge-success">Completed</span>,
-          btn: (
-            <div class="project-actions  text-center">
-              <button
-                class="btn btn-primary btn-sm"
-                value={order._id}
-                onClick={handleShow}
-                style={{ marginRight: "5px" }}
-              >
-                <i class="fas fa-folder" style={{marginRight: '4px'}}></i>
-                View
-              </button>
-            </div>
-          ),
-        };
-        all.push(element);
-      }}
-
+      var element = {
+        sr: ++index,
+        invoice: order.order_code,
+        customer: order.full_name,
+        // total_products: order.productDetail.length,
+        total_amount: order.payment_total,
+        date: convert_date_from_timestamp(order.created_at),
+        date_completed: convert_date_from_timestamp(order.updated_at),
+        status: <span class="badge badge-success">Completed</span>,
+        btn: (
+          <div class="project-actions  text-center">
+            <button
+              class="btn btn-primary btn-sm"
+              value={order.order_code }
+              onClick={handleShow}
+              style={{ marginRight: "5px" }}
+            >
+              <i class="fas fa-folder" style={{ marginRight: '4px' }}></i>
+              View
+            </button>
+          </div>
+        ),
+      };
+      all.push(element);
     }
     return all;
   };

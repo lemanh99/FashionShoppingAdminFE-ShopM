@@ -31,7 +31,7 @@ export const register = (user) => {
       ...user,
     });
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       dispatch(getListCustomer());
       const { message } = res.data;
       dispatch({
@@ -54,7 +54,7 @@ export const blockCustomer = (id) => {
     dispatch({ type: customerConstants.CUSTOMER_BLOCK_REQUEST });
     const res = await axios.put(`/customer/status`, { id });
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: customerConstants.CUSTOMER_BLOCK_SUCCESS,

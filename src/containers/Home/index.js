@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import './loading.css';
 // import Layout from '../../components/Layout';
 import {
   getListAdmin,
@@ -31,15 +32,13 @@ const Home = (props) => {
   ) : (
     <div className="card-body">
       .
-      <div className="overlay ">
-        <div className="row justify-content-center">
-          <i
-            className="fas fad fa-spinner fa-spin"
-            style={{ fontSize: "50px" }}
-          />
-        </div>
-        <div className="row justify-content-center">
-          <p style={{ fontSize: "30px" }}>Loading...</p>
+      <div id="loading" className='home1'>
+        <div id="loading-center">
+          <div id="loading-center-absolute">
+            <div className="object" id="object_one"></div>
+            <div className="object" id="object_two"></div>
+            <div className="object" id="object_three"></div>
+          </div>
         </div>
       </div>
     </div>

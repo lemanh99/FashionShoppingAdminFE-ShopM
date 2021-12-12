@@ -18,7 +18,6 @@ export const login = (user) => {
         const refresh = data.refresh;
         localStorage.setItem("token", token);
         localStorage.setItem("refresh", refresh);
-
         dispatch({
           type: authConstants.LOGIN_SUCCESS,
           payload: {
@@ -73,7 +72,7 @@ export const logout = () => {
     dispatch({ type: authConstants.LOGOUT_REQUEST });
     const refresh = localStorage.getItem("refresh");
 
-    const res = await axios.post(`/user/logout`, {refresh: refresh});
+    const res = await axios.post(`/user/logout/`, {refresh: refresh});
     if (res.status === 200) {
       localStorage.clear();
       dispatch({ type: authConstants.LOGOUT_SUCCESS });

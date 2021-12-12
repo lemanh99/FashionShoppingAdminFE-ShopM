@@ -10,6 +10,7 @@ const initState = {
   loading: false,
   error: "",
   message: "",
+  user:null,
 };
 
 
@@ -46,7 +47,7 @@ export default (state = initState, action) => {
         message: "",
         error: "",
         user: action.payload.user,
-        loading: false,
+        // loading: false,
       };
       break;
 

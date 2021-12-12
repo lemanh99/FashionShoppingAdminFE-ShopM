@@ -73,17 +73,6 @@ const Product = () => {
   };
 
   const handleCloseAdd = () => {
-    // const form = new FormData();
-    // console.log(price, quantity, discount, description, brandId);
-    // form.append("name", name);
-    // form.append("price", price);
-    // form.append("discount", discount);
-    // form.append("quantity", quantity);
-    // form.append("description", description);
-    // form.append("brandId", brandId);
-    // for (let pic of productPictures) {
-    //   form.append("productPicture", pic);
-    // }
     const product = {
       "name": name,
       "category": [category],
@@ -209,33 +198,30 @@ const Product = () => {
         update_date: convert_datetime_from_timestamp(product.updated_at),
         btn: (
           <div class="project-actions  text-center">
-            <button
-              class="btn btn-primary btn-sm"
+            <a
+              class="card-title"
               value={product._id}
               onClick={handleShowView}
               style={{ marginRight: "5px" }}
             >
-              <i class="fas fa-folder"></i>
-              View
-            </button>
-            <button
-              class="btn btn-info btn-sm"
+              <i class="fas fa-folder fa-lg"></i>
+            </a>
+            <a
+              class="card-title "
               value={product._id}
               onClick={handleShowEdit}
               style={{ marginRight: "5px" }}
             >
-              <i class="fas fa-pencil-alt"></i>
-              Edit
-            </button>
-            <button
-              class="btn btn-danger btn-sm"
+              <i class="fas fa-pencil-alt fa-lg"></i>
+            </a>
+            <a
+              class="card-title"
               value={product._id}
               onClick={handleShowDelete}
               style={{ marginRight: "5px" }}
             >
-              <i class="fas fa-trash"></i>
-              Delete
-            </button>
+              <i class="fas fa-trash fa-lg"></i>
+            </a>
           </div>
         ),
       };
@@ -311,7 +297,8 @@ const Product = () => {
                   <div style={{ float: "right" }}>
                     <div className="row">
                       <div className="col-md-6">
-                        <select
+
+                        {/* <select
                           className="form-control "
                           value={selectedCategory}
                           style={{ backgroundColor: "#e9ecef", width: "164px" }}
@@ -327,7 +314,7 @@ const Product = () => {
                             ))
                             : null}
                           <option value="">All</option>
-                        </select>
+                        </select> */}
                       </div>
                     </div>
                   </div>
@@ -343,9 +330,30 @@ const Product = () => {
                     ) : null}
                   </div>
                 </div>
-                <div className="row" style={{ marginBottom: "-80px" }}>
+
+                <div className="row mt-3" style={{ marginBottom: "-50px" }}>
                   <div className="col-lg-12">
-                    <div className="" style={{ float: "right" }}>
+                    <div className="float-right">
+                      <select className="custom-select" style={{ width: 'auto' }} data-sortorder>
+                        <option value="index"> Sort by Position </option>
+                        <option value="sortData"> Sort by Custom Data </option>
+                      </select>
+                      <select className="custom-select" style={{ width: 'auto' }} data-sortorder>
+                        <option value="index"> Sort by Position </option>
+                        <option value="sortData"> Sort by Custom Data </option>
+                      </select>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search name"
+                        style={{ width: 'auto', display: 'inline',  paddingTop: '0px'}}
+                        value={search}
+                        onChange={(e) => {
+                          searchList(e);
+                        }}
+                      ></input>
+                    </div>
+                    {/* <div className="" style={{ float: "right" }}>
                       <div className="card-body">
                         <div className="input-group">
                           <div class="input-group-append">
@@ -361,7 +369,7 @@ const Product = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 

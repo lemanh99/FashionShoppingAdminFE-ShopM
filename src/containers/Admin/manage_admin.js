@@ -9,6 +9,7 @@ import DeleteAdminModal from "./Components/DeleteAdminModal";
 
 const ManageAdmin = () => {
   const manage_admin = useSelector((state) => state.manage_admin);
+  const userCurrent = useSelector((state) => state.user);
   const auth = useSelector((state) => state.auth);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -21,7 +22,6 @@ const ManageAdmin = () => {
   const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
-  const authenticate = auth.user.role;
 
   useEffect(() => {
     dispatch(getListAdmin());
@@ -69,15 +69,13 @@ const ManageAdmin = () => {
       var element = {
         sr: index + 1,
         email: admin.email,
-        fullName: admin.fullName,
-        role: admin.role,
-        btnButton:
-          authenticate === "super-admin" ? (
-            admin.role === "super-admin" ? (
-              <button type="button" className="btn  btn-dark" disabled>
-                Delete
-              </button>
-            ) : (
+        fullName: admin.full_name,
+        role: admin.group_id == 1 ? "super-admin" : "member",
+        btnButton: admin.group_id == 1 ?
+          (<button type="button" className="btn  btn-dark" disabled>
+            Delete
+          </button>) : (admin.id != userCurrent.infor.id ?
+            (
               <button
                 type="button"
                 className="btn  btn-danger"
@@ -86,12 +84,29 @@ const ManageAdmin = () => {
               >
                 Delete
               </button>
-            )
-          ) : (
-            <button type="button" className="btn  btn-dark" disabled>
-              Delete
-            </button>
-          ),
+            ) : (
+              <button type="button" className="btn  btn-dark" disabled>
+                Delete
+              </button >
+            ))
+        // authenticate === "super-admin" ? (
+        //   admin.role === "super-admin" ? (
+        //     <button type="button" className="btn  btn-dark" disabled>
+        //       Delete
+        //     </button>
+        //   ) : (
+        //     <button
+        //       type="button"
+        //       className="btn  btn-danger"
+        //       value={admin._id}
+        //       onClick={handleShowDelete}
+        //     >
+        //       Delete
+        //     </button>
+        //   )
+        // ) : (
+
+        // ),
       };
       all.push(element);
     }

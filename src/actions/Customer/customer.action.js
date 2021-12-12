@@ -4,7 +4,7 @@ import { customerConstants } from "../constants";
 export const getListCustomer = () => {
   return async (dispatch) => {
     dispatch({ type: customerConstants.GET_ALL_CUSTOMER_REQUEST });
-    const res = await axios.get(`customer/all`);
+    const res = await axios.get(`user/customer/`);
     if (res.status === 200) {
       const { data } = res.data;
       dispatch({
@@ -49,18 +49,19 @@ export const register = (user) => {
   };
 };
 
-export const blockCustomer = (id) => {
+export const blockCustomer = (id, status) => {
   return async (dispatch) => {
     dispatch({ type: customerConstants.CUSTOMER_BLOCK_REQUEST });
-    const res = await axios.put(`/customer/${id}/status`);
+    const res = await axios.put(`/user/customer/${id}/status/update`, {
+      "status_id": status
+    });
 
-    if (res.status === 201) {
+    if (res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: customerConstants.CUSTOMER_BLOCK_SUCCESS,
         payload: { message: message, error: "" },
       });
-      dispatch(getListCustomer());
     } else {
       const { error } = res.data;
       dispatch({

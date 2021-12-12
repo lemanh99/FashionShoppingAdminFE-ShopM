@@ -59,7 +59,7 @@ const InvoiceModal = (props) => {
                     <div className="col-sm-4 invoice-col">
                       From
                       <address>
-                        <strong>Mobile Store </strong>
+                        <strong>Shop </strong>
                         <br />
                         Da Nang City, VietName
                         <br />

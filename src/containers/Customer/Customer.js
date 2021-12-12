@@ -105,9 +105,8 @@ const Customer = () => {
     for (let [index, customer] of customers.entries()) {
       var element = {
         sr: index + 1,
-        username: customer.username,
         email: customer.email,
-        fullName: customer.fullName,
+        fullName: customer.full_name,
         btnView: (
           <div style={{ textAlign: "center" }}>
             <button
@@ -123,12 +122,14 @@ const Customer = () => {
         ),
         btnLock: (
           <div style={{ textAlign: "center" }}>
-            {customer.status === "active" ? (
+            {customer.status_id === 2 ? (
               <button
                 type="button"
                 class="btn btn-dark"
                 onClick={() => {
-                  dispatch(blockCustomer(customer._id));
+                  dispatch(blockCustomer(customer.id, 1)).then(() => {
+                    dispatch(getListCustomer())
+                  })
                 }}
               >
                 Lock
@@ -138,7 +139,9 @@ const Customer = () => {
                 type="button"
                 class="btn btn-success"
                 onClick={() => {
-                  dispatch(blockCustomer(customer._id));
+                  dispatch(blockCustomer(customer.id, 2)).then(() => {
+                    dispatch(getListCustomer())
+                  })
                 }}
               >
                 Unlock
@@ -157,12 +160,6 @@ const Customer = () => {
       {
         label: "No.",
         field: "sr",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "Username",
-        field: "username",
         sort: "asc",
         width: 150,
       },

@@ -35,7 +35,7 @@ export const getListAdmin = () => {
   return async (dispatch) => {
     try {
       dispatch({ type: adminConstants.GET_ALL_ADMIN_REQUEST });
-      const res = await axios.get(`/admin/all`);
+      const res = await axios.get(`/user/member/`);
       if (res.status === 200) {
         const { data } = res.data;
         dispatch({

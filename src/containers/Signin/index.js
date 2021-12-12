@@ -28,7 +28,7 @@ const Signin = (props) => {
         <div className="login-box">
           <div className="login-logo">
             <NavLink className="text-black" to={`/`}>
-              <b>Mobile Shop</b> ONLINE
+              <b>Shop</b> ONLINE
             </NavLink>
           </div>
           <div>

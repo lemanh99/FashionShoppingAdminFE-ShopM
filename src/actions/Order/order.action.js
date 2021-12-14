@@ -9,9 +9,9 @@ export const getOrders = () => {
     const res_transported = await axios.get(`/order?shipping_status=2`);
     const res_delivered = await axios.get(`/order?shipping_status=3`);
     const res_cancelled = await axios.get(`/order?shipping_status=4`);
-    if (res.status === 200 && res_transported.status === 200 
-      && res_delivered.status === 200 && res_transported.status === 200 &res_cancelled.status === 200) {
-      const {data} = res.data
+    if (res.status === 200 && res_transported.status === 200
+      && res_delivered.status === 200 && res_transported.status === 200 & res_cancelled.status === 200) {
+      const { data } = res.data
       const received = res_received.data.data;
       const transported = res_transported.data.data;
       const delivered = res_delivered.data.data;
@@ -36,10 +36,9 @@ export const getOrders = () => {
   };
 };
 
-export const orderShiped = (id) => {
+export const orderShiped = (order_id, data) => {
   return async (dispatch) => {
-    console.log("cjhay day", id);
-    const res = await axios.post(`/confirm-shiped/${id}`);
+    const res = await axios.put(`/order/shipping/transported/${order_id}`, { ...data });
     if (res.status === 200) {
       dispatch(getOrders());
     } else {
@@ -49,9 +48,9 @@ export const orderShiped = (id) => {
   };
 };
 
-export const orderCanceled = (id) => {
+export const handerOrderCanceled = (id) => {
   return async (dispatch) => {
-    const res = await axios.post(`/confirm-canceled-by-admin/${id}`);
+    const res = await axios.put(`/order/admin/cancel/${id}`);
     if (res.status === 200) {
       dispatch(getOrders());
     } else {

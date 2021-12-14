@@ -8,7 +8,7 @@ const LastOrders = (props) => {
       <div className="card-header border-transparent">
         <h3 className="card-title">Latest Orders</h3>
         <div className="card-tools">
-          <span className="badge badge-warning">5 New Order</span>
+          <span className="badge badge-warning">{order && order.total_items ? order.total_items : 0} New Order</span>
           <button
             type="button"
             className="btn btn-tool"
@@ -32,25 +32,20 @@ const LastOrders = (props) => {
             <thead>
               <tr>
                 <th>Order ID</th>
-                <th>TotalAmount</th>
+                <th>Subtotal Payment</th>
               </tr>
             </thead>
             <tbody>
-              {order.orders
-                .sort(
-                  (a, b) =>
-                    new Date(b.createdAt).getTime() -
-                    new Date(a.createdAt).getTime()
-                )
-                .slice(0, 5)
-                .map((order) => {
-                  return (
-                    <tr>
-                      <td>{order.codeBill}</td>
-                      <td>{order.totalAmount}</td>
-                    </tr>
-                  );
-                })}
+              {order && order.items ? (
+                order.items
+                  .map((order) => {
+                    return (
+                      <tr>
+                        <td>{order.order_code}</td>
+                        <td>{order.subtotal} VND</td>
+                      </tr>
+                    );
+                  })) : null}
             </tbody>
           </table>
         </div>

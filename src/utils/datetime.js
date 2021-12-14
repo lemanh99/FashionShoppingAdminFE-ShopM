@@ -14,7 +14,12 @@ export const convert_datetime_from_timestamp=(timestamps)=> {
 
 export const convert_date_from_timestamp=(timestamps)=> {
     if (timestamps==null) return null;
-    var a = new Date(timestamps * 1000);
+    if(timestamps.toString().length>10){
+        var a = new Date(timestamps);
+    }else{
+        var a = new Date(timestamps * 1000);
+    }
+    
     var year = a.getFullYear();
     var month = a.getMonth();
     var date = a.getDate();

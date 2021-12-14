@@ -9,6 +9,7 @@ const LastProduct = (props) => {
       <div className="card-header">
         <h3 className="card-title">Recently Added Products</h3>
         <div className="card-tools">
+          <span className="badge badge-warning">{product && product.total_items ? product.total_items : 0} New Product</span>
           <button
             type="button"
             className="btn btn-tool"
@@ -28,42 +29,24 @@ const LastProduct = (props) => {
       {/* /.card-header */}
       <div className="card-body p-0">
         <ul className="products-list product-list-in-card pl-2 pr-2">
-          {product.listProduct
-            .sort(
-              (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime()
-            )
-            .slice(0, 4)
+          {product && product.items ? (product.items
             .map((product) => {
               return (
                 <li className="item">
-                  <div className="product-img">
-                    <img
-                      src={
-                        product.productPictures
-                          ? generatePublicUrl(product.productPictures[0].img)
-                          : ""
-                      }
-                      aria-hidden
-                      alt="Product Image"
-                      className="img-size-50"
-                    />
-                  </div>
                   <div className="product-info">
                     <div className="product-title">
-                      {product.name}
+                      <a href={`http://localhost:3000/shop/${product.id}`} target="_blank">{product.name}</a>
                       <span className="badge badge-warning float-right">
-                        ${product.price}
+                        {product.status_name}
                       </span>
                     </div>
                     <span className="product-description">
-                      {product.description}
+                      Category: {product.category_name}
                     </span>
                   </div>
                 </li>
               );
-            })}
+            })) : null}
         </ul>
       </div>
 

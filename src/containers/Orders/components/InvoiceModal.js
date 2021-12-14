@@ -1,10 +1,11 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
+import toast from "react-hot-toast";
 import { getAddressVietNam } from "../../../utils/address";
 import { convert_date_from_timestamp } from "../../../utils/datetime";
 
 const InvoiceModal = (props) => {
-  const { order, customer, handleShiped, handleCancel, addressApi } = props;
+  const { order, customer, handleShiped, handleCancel, addressApi, trackingNumber, setTrackingNumber } = props;
   const print = () => {
     var content = document.getElementById("printarea");
     var pri = document.getElementById("ifmcontentstoprint").contentWindow;
@@ -16,10 +17,14 @@ const InvoiceModal = (props) => {
   };
   const shipping = order.shipping;
   const orderItems = order.order_item;
-  const status = order.orderStatus
-    ? order.orderStatus.find((status) => status.isCompleted === true)
-    : null;
   const date = new Date();
+  const handerDelivery = (e)=>{
+    if(trackingNumber!=="" || trackingNumber!=null){
+      handleShiped(e)
+    }else{
+      toast.error("Tracking number required")
+    }
+  }
   return (
     <Modal size="xl" show={props.show} onHide={props.handleClose}>
       <Modal.Header closeButton>
@@ -94,7 +99,7 @@ const InvoiceModal = (props) => {
                       <br />
                       <b>Order ID:{" "}</b> {order.order_code}
                       <br />
-                      <b>Order date:{" "}</b> {convert_date_from_timestamp(order.order_date / 1000)}
+                      <b>Order date:{" "}</b> {convert_date_from_timestamp(order.order_date)}
                       <br />
                     </div>
                     {/* /.col */}
@@ -136,7 +141,7 @@ const InvoiceModal = (props) => {
 
                         {order.payment_method === "COD"
                           ? "Cash to deliver"
-                          : "Card online"}
+                          : order.payment_method}
                       </p>
                       <p>
                         <b>Payment Status :{" "}</b>
@@ -169,7 +174,27 @@ const InvoiceModal = (props) => {
                             </tr>
                           </tbody>
                         </table>
+                        {shipping ? (
+                          Number(shipping.shipping_status_id) === 1 ? (
+                            <div className="table" style={{ padding: '10px' }}>
+                              <div className="form-group">
+                                <label>Tracking number</label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Enter tracking number"
+                                  value={trackingNumber}
+                                  onChange={(e) => {
+                                    setTrackingNumber(e.target.value);
+                                  }}
+                                  required
+                                />
+                              </div>
+                            </div>
+                          ) : null
+                        ) : null}
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -189,14 +214,14 @@ const InvoiceModal = (props) => {
             >
               <i className="fas fa-backspace" /> Back
             </button>
-            {status ? (
-              status.type === "ordered" ? (
+            {shipping ? (
+              Number(shipping.shipping_status_id) === 1 ? (
                 <>
                   <button
                     type="button"
                     className="btn btn-danger float-right"
                     style={{ marginRight: "5px" }}
-                    value={order._id}
+                    value={order.id}
                     onClick={handleCancel}
                   >
                     <i className="fas fa-trash" /> Cancel
@@ -205,7 +230,7 @@ const InvoiceModal = (props) => {
                     type="button"
                     className="btn btn-success float-right"
                     style={{ marginRight: "5px" }}
-                    value={order._id}
+                    value={order.id}
                     onClick={handleShiped}
                   >
                     <i className="far fa-credit-card" /> Delivery

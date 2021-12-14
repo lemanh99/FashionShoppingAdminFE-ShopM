@@ -3,7 +3,7 @@ import Layout from "../../components/Layout";
 // import Tabs from "react-bootstrap/Tabs";
 import { Tab, Tabs } from "react-bootstrap";
 import PendingTable from "./components/PendingTable";
-import { getListCustomer, getOrders, orderCanceled, orderShiped } from "../../actions";
+import { getListCustomer, getOrders, handerOrderCanceled, orderShiped } from "../../actions";
 import { useDispatch, useSelector } from "react-redux";
 import CancelTable from "./components/CancelTable";
 import CompleteTable from "./components/CompleteTable";
@@ -25,7 +25,8 @@ const Order = () => {
   const [show, setShow] = useState(false);
   const [order, setOrder] = useState([]);
   const [customer, setCustomer] = useState([]);
-  const [addressApi, setAddressApi]= useState([]);
+  const [addressApi, setAddressApi] = useState([]);
+  const [trackingNumber, setTrackingNumber] = useState("");
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -37,39 +38,44 @@ const Order = () => {
     getCountry()
   }, [])
 
-  async function getCountry(){
+  async function getCountry() {
     const res = await axios.get('https://provinces.open-api.vn/api/?depth=3')
-    if(res){
+    if (res) {
       setAddressApi(res.data)
     }
-}
+  }
   const handleShiped = (event) => {
-    dispatch(orderShiped(event.target.value));
+    const data = {
+      tracking_number: trackingNumber,
+    }
+    dispatch(orderShiped(event.target.value, data));
     setShow(false);
     setCustomer([]);
     setOrder([]);
+    setTrackingNumber("");
   };
 
   const handleCancel = (event) => {
-    dispatch(orderCanceled(event.target.value));
+    dispatch(handerOrderCanceled(event.target.value));
     setShow(false);
     setCustomer([]);
     setOrder([]);
+    setTrackingNumber("");
   };
 
 
   const handleShow = (event) => {
     const orderCode = event.target.value;
-    axiosIntance.get(`order/admin/detail/${orderCode}`).then((res)=>{
+    axiosIntance.get(`order/admin/detail/${orderCode}`).then((res) => {
       const { data } = res.data;
       setOrder(data);
       setShow(true);
     })
-    
+
     // setShipping(ord.shipping)
 
     // const prod = products.listProduct.find((product) => product._id === id);
-    
+
   };
   const handleClose = () => {
     setShow(false);
@@ -93,7 +99,7 @@ const Order = () => {
                       listOrder={orderReceived}
                       show={show}
                       handleShow={handleShow}
-                      
+
                     />
                   </Tab>
                   <Tab eventKey="2" title="Cancelled">
@@ -129,9 +135,11 @@ const Order = () => {
           handleClose={handleClose}
           order={order}
           customer={customer}
-          handleShiped = {handleShiped}
-          handleCancel = {handleCancel}
+          handleShiped={handleShiped}
+          handleCancel={handleCancel}
           addressApi={addressApi}
+          trackingNumber={trackingNumber}
+          setTrackingNumber={setTrackingNumber}
         />
       ) : null}
     </Layout>

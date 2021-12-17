@@ -27,7 +27,7 @@ export const register = (user) => {
     dispatch({
       type: customerConstants.CUSTOMER_REGISTER_REQUEST,
     });
-    const res = await axios.post(`/signup`, {
+    const res = await axios.post(`/user/customer/new`, {
       ...user,
     });
 

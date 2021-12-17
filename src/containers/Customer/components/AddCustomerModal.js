@@ -24,6 +24,8 @@ const AddCustomerModal = (props) => {
     setPhoneNumber,
     setAddress,
     listCustomer,
+    gender,
+    setGender,
   } = props;
 
   const check = (value, type) => {
@@ -42,10 +44,6 @@ const AddCustomerModal = (props) => {
           setMessage("Account already exists");
           break;
         }
-        const checkUsername = listCustomer.find(
-          (listCustomer) => listCustomer.username === value
-        );
-        checkUsername ? setMessage("Username already exists") : setMessage("");
         break;
       default:
         break;
@@ -71,21 +69,6 @@ const AddCustomerModal = (props) => {
             onChange={(e) => {
               setEmail(e.target.value);
               check(e.target.value, 1);
-            }}
-            autofocus
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Username</label>
-          <input
-            type="email"
-            className="form-control"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              check(e.target.value, 2);
             }}
             autofocus
             required
@@ -119,7 +102,39 @@ const AddCustomerModal = (props) => {
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div className="form-group">
+              <label>Gender</label>
+              <select
+                name="gender"
+                id="gender"
+                value={gender}
+                className="form-control"
+                required
+                onChange={(e) => setGender(e.target.value)}
+              >
+                <option value="1">Male</option>
+                <option value="2">Female</option>
+                <option value="3">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-6">
 
+            <div className="form-group">
+              <label>Phone Number</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter phone number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+        </div>
         <div className="form-group">
           <label for="exampleInputPassword1">Password</label>
           <input
@@ -131,30 +146,9 @@ const AddCustomerModal = (props) => {
             required
           />
         </div>
-        <div className="form-group">
-          <label>Phone Number</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Address</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            required
-          />
-        </div>
+
       </div>
-    </NewModal>
+    </NewModal >
   );
 };
 

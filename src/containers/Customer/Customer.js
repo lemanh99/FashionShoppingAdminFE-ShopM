@@ -14,6 +14,7 @@ const Customer = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [gender, setGender] = useState(1);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -43,7 +44,7 @@ const Customer = () => {
   //Handle show modal
   const handleShow = (event) => {
     const id = event.target.value;
-    const user = customer.listCustomer.find((customer) => customer._id === id);
+    const user = customer.listCustomer.find((customer) => Number(customer.id) === Number(id));
     setUser(user);
     setShow(true);
   };
@@ -52,14 +53,14 @@ const Customer = () => {
   };
   const handleCloseAdd = () => {
     const customer = {
-      firstName,
-      lastName,
-      email,
-      username,
-      password,
-      phoneNumber,
-      address,
-    };
+      "email": email,
+      "first_name": firstName,
+      "last_name": lastName,
+      "phone_number": phoneNumber,
+      "password": password,
+      "gender_id": gender,
+      "birth_date": null
+    }
     dispatch(register(customer));
     setShow(false);
     setFirstName("");
@@ -79,19 +80,20 @@ const Customer = () => {
     let lst = null;
     setSearch(value);
     switch (selected) {
+
       case "1":
-        lst = customer.listCustomer.filter((customer) =>
-          customer.username.toLowerCase().includes(value.toLowerCase())
-        );
-        break;
-      case "2":
         lst = customer.listCustomer.filter((customer) =>
           customer.email.toLowerCase().includes(value.toLowerCase())
         );
         break;
+      case "2":
+        lst = customer.listCustomer.filter((customer) =>
+          customer.full_name.toLowerCase().includes(value.toLowerCase())
+        );
+        break;
       case "3":
         lst = customer.listCustomer.filter((customer) =>
-          customer.fullName.toLowerCase().includes(value.toLowerCase())
+          customer.phone_number.toLowerCase().includes(value.toLowerCase())
         );
         break;
       default:
@@ -107,12 +109,13 @@ const Customer = () => {
         sr: index + 1,
         email: customer.email,
         fullName: customer.full_name,
+        phonenumber: customer.phone_number,
         btnView: (
           <div style={{ textAlign: "center" }}>
             <button
               type="button"
               class="btn btn-warning "
-              value={customer._id}
+              value={customer.id}
               style={{ marginRight: "4px" }}
               onClick={handleShow}
             >
@@ -176,6 +179,12 @@ const Customer = () => {
         width: 270,
       },
       {
+        label: "Phone number",
+        field: "phonenumber",
+        sort: "asc",
+        width: 50,
+      },
+      {
         label: "",
         field: "btnView",
         sort: "asc",
@@ -224,7 +233,8 @@ const Customer = () => {
                       <div className="card-body">
                         <div className="input-group mb-3">
                           <div className="input-group-prepend">
-                            <select
+
+                            {/* <select
                               className="btn btn-default dropdown-toggle"
                               value={selected}
                               style={{ backgroundColor: "#e9ecef" }}
@@ -239,7 +249,7 @@ const Customer = () => {
                               <option className="dropdown-item" value="3">
                                 Full Name
                               </option>
-                            </select>
+                            </select> */}
                           </div>
                           <input
                             type="text"
@@ -250,6 +260,16 @@ const Customer = () => {
                               searchList(e);
                             }}
                           ></input>
+                          <select
+                            className="custom-select"
+                            style={{ width: 'auto' }}
+                            data-sortorder
+                            onChange={(e) => handleSelect(e)}
+                          >
+                            <option value="index" value="1"> Search by email</option>
+                            <option value="sortData" value="2"> Search by full name</option>
+                            <option value="sortData" value="3"> Search by phone number </option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -302,6 +322,8 @@ const Customer = () => {
         address={address}
         setAddress={setAddress}
         listCustomer={listCustomer}
+        gender={gender}
+        setGender={setGender}
       />
       {/* <DeleteAdminModal
         show={showDeleteModal}

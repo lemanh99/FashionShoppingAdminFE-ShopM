@@ -33,11 +33,13 @@ const Product = () => {
   const [searchWord, setSearchWord] = useState(null)
   const [productStatusId, setProductStatusId] = useState(null)
   const [listCategory, setListCategory] = useState([]);
+  const [listStatus, setListStatus] = useState([]);
   const [product, setProduct] = useState({});
   const [message, setMessage] = useState("");
   const [showAdd, setShowAdd] = useState(false);
   const [parentCategory, setParentCategory] = useState([]);
   const [childCategory, setChildCategory] = useState([]);
+  const [dataTable, setDataTable] = useState([])
 
   const [showView, setShowView] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -45,13 +47,17 @@ const Product = () => {
 
   //entries
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [search, setSearch] = useState("");
 
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getListProduct());
     dispatch(getProductStatus())
-    dispatch(getListCategory())
+    dispatch(getListCategory());
+    setSelectedCategory("");
+    setSelectedStatus("");
+    setSearch("");
   }, [dispatch]);
   useEffect(() => {
     setMessage(products.messages);
@@ -59,7 +65,11 @@ const Product = () => {
   useEffect(() => {
     setListProduct(products.listProduct);
     setListCategory(categories.listCategory);
-  }, [products.listProduct, categories.listCategory]);
+    if (listProductStatus && listProductStatus.length > 0) {
+      setListStatus(listProductStatus[0].data)
+    }
+
+  }, [products.listProduct, categories.listCategory, listProductStatus]);
   //show Modal
 
   const handleShowAdd = () => {
@@ -81,7 +91,6 @@ const Product = () => {
       "search_word": searchWord,
       "product_status_id": productStatusId,
     }
-    console.log(product);
     dispatch(addProduct(product)).then(() => {
       dispatch(getListProduct())
     });
@@ -180,12 +189,52 @@ const Product = () => {
       setListProduct(prod);
     }
   };
-  // const convert_data = (timestamp) => {
-  //   const date = convert_datetime_from_timestamp(timestamp)
-  //   return date
-  // }
+  const handerFilter = (e, type) => {
+    e.preventDefault();
+    var data_filter = {
+      category_parent_id: selectedCategory,
+      product_status: selectedStatus,
+      search_keyword: search
+    }
+    let data = {}
+    switch (type) {
+      case "status": {
+        data = {
+          ...data_filter,
+          product_status: e.target.value
+        }
+        // do some thing
+        break;
+      }
+      case "category": {
+        // do some thing
+        data = {
+          ...data_filter,
+          category_parent_id: e.target.value
+        }
+        break;
+      }
+      case "search": {
+        // do some thing
+        data = {
+          ...data_filter,
+          search_keyword: e.target.value
+        }
+        break;
+      }
+      default: {
+        data = {
+          ...data_filter
+        }
+        // do something
+      }
+    }
+    dispatch(getListProduct(data))
+  }
+  useEffect(() => {
+    settingDatatable();
+  }, [listProduct])
 
-  //row table
   const rowTable = (products) => {
     const all = [];
     for (let [index, product] of products.entries()) {
@@ -197,31 +246,33 @@ const Product = () => {
         create_date: convert_datetime_from_timestamp(product.created_at),
         update_date: convert_datetime_from_timestamp(product.updated_at),
         btn: (
-          <div class="project-actions  text-center">
-            <a
-              class="card-title"
-              value={product._id}
-              onClick={handleShowView}
-              style={{ marginRight: "5px" }}
-            >
-              <i class="fas fa-folder fa-lg"></i>
-            </a>
-            <a
-              class="card-title "
-              value={product._id}
-              onClick={handleShowEdit}
-              style={{ marginRight: "5px" }}
-            >
-              <i class="fas fa-pencil-alt fa-lg"></i>
-            </a>
-            <a
-              class="card-title"
-              value={product._id}
-              onClick={handleShowDelete}
-              style={{ marginRight: "5px" }}
-            >
-              <i class="fas fa-trash fa-lg"></i>
-            </a>
+          <div className="row" style={{ width: '86px' }}>
+            <div class="project-actions  text-center">
+              <a
+                class="card-title"
+                value={product._id}
+                onClick={handleShowView}
+                style={{ marginRight: "5px" }}
+              >
+                <i class="fas fa-folder fa-lg"></i>
+              </a>
+              <a
+                class="card-title "
+                value={product._id}
+                onClick={handleShowEdit}
+                style={{ marginRight: "5px" }}
+              >
+                <i class="fas fa-pencil-alt fa-lg"></i>
+              </a>
+              <a
+                class="card-title"
+                value={product._id}
+                onClick={handleShowDelete}
+                style={{ marginRight: "5px" }}
+              >
+                <i class="fas fa-trash fa-lg"></i>
+              </a>
+            </div>
           </div>
         ),
       };
@@ -229,61 +280,64 @@ const Product = () => {
     }
     return all;
   };
-  const data = {
-    columns: [
-      {
-        label: "No.",
-        field: "sr",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "Category",
-        field: "category",
-        sort: "asc",
-        width: 200,
-      },
-      {
-        label: "Name",
-        field: "name",
-        sort: "asc",
-        width: 200,
-      },
-      {
-        label: "Status",
-        field: "status",
-        sort: "asc",
-        width: 50,
-      },
-      {
-        label: "Create date",
-        field: "create_date",
-        sort: "asc",
-        width: 200,
-      },
-      {
-        label: "Update_date",
-        field: "update_date",
-        sort: "asc",
-        width: 200,
-      },
-      {
-        label: "",
-        field: "btn",
-        sort: "asc",
-        width: 100,
-      },
-    ],
-    rows: rowTable(listProduct),
-  };
+  const settingDatatable = () => {
+    const data = {
+      columns: [
+        {
+          label: "No.",
+          field: "sr",
+          sort: "asc",
+          width: 50,
+        },
+        {
+          label: "Category",
+          field: "category",
+          sort: "asc",
+          width: 150,
+        },
+        {
+          label: "Name",
+          field: "name",
+          sort: "asc",
+          width: 300,
+        },
+        {
+          label: "Status",
+          field: "status",
+          sort: "asc",
+          width: 50,
+        },
+        {
+          label: "Create date",
+          field: "create_date",
+          sort: "asc",
+          width: 200,
+        },
+        {
+          label: "Update_date",
+          field: "update_date",
+          sort: "asc",
+          width: 200,
+        },
+        {
+          label: "",
+          field: "btn",
+          sort: "asc",
+          width: 200,
+        },
+      ],
+      rows: rowTable(listProduct),
+    };
+    setDataTable(data)
+  }
+
 
   return (
     <Layout title="Manage product">
       <section className="content">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-md-1"></div>
-            <div className="col-md-10">
+            <div className="col-md-12">
               <div className="card">
                 <div className="card-header">
                   <div class="card-title">
@@ -334,23 +388,30 @@ const Product = () => {
                 <div className="row mt-3" style={{ marginBottom: "-50px" }}>
                   <div className="col-lg-12">
                     <div className="float-right">
-                      <select className="custom-select" style={{ width: 'auto' }} data-sortorder>
-                        <option value="index"> Sort by Position </option>
-                        <option value="sortData"> Sort by Custom Data </option>
+                      <select className="custom-select" style={{ width: 'auto' }} data-sortorder onChange={(e) => { setSelectedStatus(e.target.value); handerFilter(e, "status") }}>
+                        <option value=""> Filter by status </option>
+                        {listStatus
+                          ? listStatus.map((status) => (
+                            <option value={status.id}>{status.name}</option>
+                          ))
+                          : null}
                       </select>
-                      <select className="custom-select" style={{ width: 'auto' }} data-sortorder>
-                        <option value="index"> Sort by Position </option>
-                        <option value="sortData"> Sort by Custom Data </option>
+                      <select className="custom-select" style={{ width: 'auto' }} data-sortorder onChange={(e) => { setSelectedCategory(e.target.value); handerFilter(e, "category") }}>
+                        <option value=""> Filter by category</option>
+                        {listCategory
+                          ? listCategory.map((category) =>
+                            category.child_category.length > 0 ? (
+                              <option value={category.id}>{category.category_name}</option>
+                            ) : null)
+                          : null}
                       </select>
                       <input
                         type="text"
                         className="form-control"
                         placeholder="Search name"
-                        style={{ width: 'auto', display: 'inline',  paddingTop: '0px'}}
+                        style={{ width: 'auto', display: 'inline', paddingTop: '0px' }}
                         value={search}
-                        onChange={(e) => {
-                          searchList(e);
-                        }}
+                        onChange={(e) => { setSearch(e.target.value); handerFilter(e, "search") }}
                       ></input>
                     </div>
                     {/* <div className="" style={{ float: "right" }}>
@@ -383,15 +444,17 @@ const Product = () => {
                       striped
                       bordered
                       hover
+                      fixed
+                      autoWidth={false}
                       // barReverse
                       noBottomColumns
-                      data={data}
+                      data={dataTable}
                     />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="col-md-1"></div>
+
           </div>
         </div>
       </section>

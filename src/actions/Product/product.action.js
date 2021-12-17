@@ -1,10 +1,14 @@
 import axios from "../../helpers/axios";
 import { productConstants } from "../constants";
 
-export const getListProduct = () => {
+export const getListProduct = (filters) => {
   return async (dispatch) => {
+    const category_parent_id = filters && filters.category_parent_id?filters.category_parent_id:"";
+    const search_keyword = filters && filters.search_keyword?filters.search_keyword:"";
+    const product_status = filters && filters.product_status?filters.product_status:"";
+
     dispatch({ type: productConstants.GET_ALL_PRODUCT_REQUEST });
-    const res = await axios.get(`/product`);
+    const res = await axios.get(`/product/?product_status=${product_status}&search_keyword=${search_keyword}&category_parent_id=${category_parent_id}`);
     if (res.status === 200) {
       const { data } = res.data;
       dispatch({

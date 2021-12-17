@@ -7,7 +7,7 @@ export const signup = (user) => {
       dispatch({
         type: adminConstants.ADMIN_REGISTER_REQUEST,
       });
-      const res = await axios.post(`/admin/signup`, {
+      const res = await axios.post(`/user/member/create/`, {
         ...user,
       });
 

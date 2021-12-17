@@ -39,7 +39,7 @@ const CategoryChild = (props) => {
             dispatch(getListCategoryChild(id));
             dispatch(getListCategory());
         }
-    }, []);
+    }, [dispatch]);
     useEffect(() => {
         setMessage(categories.messages);
         const cate = categorieParent.listCategory.find((category) => category.id === Number(id))
@@ -75,7 +75,9 @@ const CategoryChild = (props) => {
     };
 
     const handleCloseDelete = () => {
-        dispatch(deleteCategory(category.id));
+        dispatch(deleteCategory(category.id)).then((e)=>{
+            dispatch(getListCategoryChild(id))
+        });
         setCategory({});
         setShowDeleteModal(false);
         setMessage("Delete Successfully!");

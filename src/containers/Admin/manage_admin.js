@@ -14,6 +14,7 @@ const ManageAdmin = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [listAdmin, setListAdmin] = useState([]);
   const [show, setShow] = useState(false);
@@ -41,12 +42,23 @@ const ManageAdmin = () => {
     setShowDeleteModal(true);
   };
   const handleClose = () => {
+    // const user = {
+    //   firstName,
+    //   lastName,
+    //   email,
+    //   password,
+    // };
     const user = {
-      firstName,
-      lastName,
-      email,
-      password,
-    };
+      "first_name": firstName,
+      "last_name": lastName,
+      "phone_number": null,
+      "department": "manage shop",
+      "username": username,
+      "email": email,
+      "password": password,
+      "authority_id": 2,
+      "is_active": true
+    }
     dispatch(signup(user));
     setShow(false);
     setFirstName("");
@@ -68,8 +80,9 @@ const ManageAdmin = () => {
     for (let [index, admin] of listAdmin.entries()) {
       var element = {
         sr: index + 1,
-        email: admin.email,
         fullName: admin.full_name,
+        username: admin.username,
+        email: admin.email,
         role: admin.group_id == 1 ? "super-admin" : "member",
         btnButton: admin.group_id == 1 ?
           (<button type="button" className="btn  btn-dark" disabled>
@@ -117,6 +130,12 @@ const ManageAdmin = () => {
       {
         label: "No.",
         field: "sr",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "Username login",
+        field: "username",
         sort: "asc",
         width: 150,
       },
@@ -203,6 +222,8 @@ const ManageAdmin = () => {
         setFirstName={setFirstName}
         lastName={lastName}
         setLastName={setLastName}
+        username={username}
+        setUsername={setUsername}
         email={email}
         setEmail={setEmail}
         password={password}

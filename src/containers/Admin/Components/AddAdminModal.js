@@ -18,6 +18,8 @@ const AddAdminModal = (props) => {
     setEmail,
     setPassword,
     listAdmin,
+    username,
+    setUsername,
   } = props;
   const checkEmail = (value) => {
     const checkEmail = listAdmin.find((listAdmin) => listAdmin.email === value);
@@ -34,7 +36,20 @@ const AddAdminModal = (props) => {
     >
       <div className="card-body">
         {message ? <Notification type="danger" message={message} /> : ""}
-
+        <div className="form-group">
+          <label>Username</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter username"
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+            autofocus
+            required
+          />
+        </div>
         <div className="form-group">
           <label>Email address</label>
           <input

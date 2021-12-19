@@ -54,12 +54,10 @@ export const deleteProduct = (id) => {
   return async (dispatch) => {
     dispatch({ type: productConstants.DELETE_PRODUCT_REQUEST });
     const res = await axios.delete(`/product/delete/${id}`);
-    if (res.status === 202) {
-      const { message } = res.data;
-      dispatch(getListProduct());
+    if (res.status === 200) {
       dispatch({
         type: productConstants.DELETE_PRODUCT_SUCCESS,
-        payload: { message: message, error: "" },
+        payload: {},
       });
     } else {
       const { error } = res.data;
@@ -71,10 +69,10 @@ export const deleteProduct = (id) => {
   };
 };
 
-export const updateProduct = (form) => {
+export const updateProduct = (product) => {
   return async (dispatch) => {
     dispatch({ type: productConstants.UPDATE_PRODUCT_REQUEST });
-    const res = await axios.post(`/product/update/${form.get('id')}`, form );
+    const res = await axios.put(`/product/update/${product.id}`, {...product} );
 
     if (res.status === 200) {
       const { message } = res.data;

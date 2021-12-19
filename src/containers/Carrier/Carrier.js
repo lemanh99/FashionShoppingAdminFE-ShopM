@@ -14,12 +14,12 @@ import Layout from "../../components/Layout";
 import Notification from "../../components/UI/Notification";
 import axiosIntance from "../../helpers/axios";
 import { convert_datetime_from_timestamp } from "../../utils";
-import AddProductModal from "./components/AddProductModal";
-import DeleteProductModal from "./components/DeleteProductModal";
-import EditProductModal from "./components/EditProductModal";
-import ViewProductModal from "./components/ViewProductModal";
+// import AddProductModal from "./components/AddProductModal";
+// import DeleteProductModal from "./components/DeleteProductModal";
+// import EditProductModal from "./components/EditProductModal";
+// import ViewProductModal from "./components/ViewProductModal";
 
-const Product = () => {
+const Carrier = () => {
   const products = useSelector((state) => state.product);
   const brands = useSelector((state) => state.brand);
   const categories = useSelector((state) => state.category);
@@ -483,7 +483,7 @@ const Product = () => {
         </div>
       </section>
 
-      <AddProductModal
+      {/* <AddProductModal
         show={showAdd}
         handleClose={() => {
           setShowAdd(false);
@@ -555,39 +555,9 @@ const Product = () => {
         modalTitle={"Delete Product"}
         onSubmit={handleCloseDelete}
         name={name}
-      />
-      {/* 
-
-      <EditProductModal
-        show={showEditModal}
-        handleClose={() => {
-          setShowEditModal(false);
-          setProduct({});
-        }}
-        onSubmit={handleCloseEdit}
-        modalTitle={"Edit Product"}
-        name={name}
-        setName={setName}
-        price={price}
-        setPrice={setPrice}
-        quantity={quantity}
-        setQuantity={setQuantity}
-        discount={discount}
-        setDiscount={setDiscount}
-        description={description}
-        setDescription={setDescription}
-        brandId={brandId}
-        category={category}
-        setCategory={setCategory}
-        setBrandId={setBrandId}
-        listBrand={listBrand}
-        productPictures={productPictures}
-        listCategory={listCategory}
-        setProductPictures={setProductPictures}
-        listProduct={listProduct}
       /> */}
     </Layout>
   );
 };
 
-export default Product;
+export default Carrier;

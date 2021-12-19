@@ -70,10 +70,9 @@ export const addProductSku = (form) => {
 export const deleteProductSku = (id) => {
   return async (dispatch) => {
     dispatch({ type: productSkuConstants.DELETE_PRODUCT_SKU_REQUEST });
-    const res = await axios.delete(`/product/delete/${id}`);
-    if (res.status === 202) {
+    const res = await axios.delete(`/product/sku/delete/${id}`);
+    if (res.status === 200) {
       const { message } = res.data;
-      dispatch(getListProductSku());
       dispatch({
         type: productSkuConstants.DELETE_PRODUCT_SKU_SUCCESS,
         payload: { message: message, error: "" },

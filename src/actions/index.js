@@ -10,3 +10,4 @@ export * from "./Category/category.action";
 export * from "./Product/product.action";
 export * from "./Product/product_sku.action";
 export * from "./Order/order.action";
+// export * from "./Setting/payment.action";

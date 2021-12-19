@@ -1,7 +1,7 @@
 import React from 'react'
 import NewModal from '../../../components/UI/Modal';
 
-const DeleteProductModal = (props) => {
+const DeleteProductSkuModal = (props) => {
     const { show, handleClose, onSubmit, name } = props;
     const buttons = [
       {
@@ -24,10 +24,10 @@ const DeleteProductModal = (props) => {
         buttons={buttons}
       >
         <span className="text-danger">
-          Are you sure delete product: {name}
+          Are you sure delete product sku of product: {name}
         </span>
       </NewModal>
     );
 }
 
-export default DeleteProductModal
+export default DeleteProductSkuModal

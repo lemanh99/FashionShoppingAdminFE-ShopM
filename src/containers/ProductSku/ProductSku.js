@@ -15,6 +15,7 @@ import Layout from "../../components/Layout";
 import Notification from "../../components/UI/Notification";
 import { convert_datetime_from_timestamp } from "../../utils";
 import AddProductSkuModal from "./components/AddProductSkuModal";
+import DeleteProductSkuModal from "./components/DeleteProductSkuModal";
 import EditProductSkuModal from "./components/EditProductSkuModal";
 import ViewProductSkuModal from "./components/ViewProductSkuModal";
 
@@ -28,6 +29,7 @@ const ProductSku = (props) => {
   const listSize = useSelector((state) => state.master.size)
   const listColor = useSelector((state) => state.master.color)
 
+  const [name, setName] = useState(null);
   const [productId, setProductId] = useState([]);
   const [productSkuId, setProductSkuId] = useState(null);
   const [productName, setProductName] = useState(null);
@@ -45,6 +47,7 @@ const ProductSku = (props) => {
   const [showView, setShowView] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const [search, setSearch] = useState("");
 
@@ -99,10 +102,12 @@ const ProductSku = (props) => {
   };
 
   const handleShowView = (e) => {
+    const id = e.target.value;
     const prod = product_skus.listProductSku.find(
-      (product_sku) => product_sku.id === Number(e.target.value)
+      (product_sku) => product_sku.id === Number(id)
     );
     if (prod) {
+      setProductSkuId(id);
       setProductName(prod.product_name);
       setStock(prod.stock);
       setPrice(prod.price);
@@ -121,22 +126,28 @@ const ProductSku = (props) => {
     setColor(null);
     setImageSku([]);
     setImageSkuShow(null);
+    setEdit(false);
     setShowView(false);
   };
 
   const handleShowDelete = (event) => {
     const id = event.target.value;
-    const prod = product_skus.listProductSku.find((product) => product._id === id);
-    // setProduct(prod);
-    // setName(prod.name);
-    setShowDeleteModal(true);
+    const prod = product_skus.listProductSku.find((product_sku) => product_sku.id === Number(id));
+    console.log(prod)
+    if(prod){
+      setProduct(prod);
+      setName(prod.product_name);
+      setShowDeleteModal(true);
+    }
   };
 
   const handleCloseDelete = () => {
-    dispatch(deleteProductSku(product._id));
+    dispatch(deleteProductSku(product.id)).then(() => {
+      dispatch(getListProductSkuByProductId(product_id));
+    });
     setProduct({});
+    setName(null);
     setShowDeleteModal(false);
-    setMessage("Delete Successfully!");
   };
   const handleShowEdit = (event) => {
     const id = event.target.value;
@@ -174,6 +185,9 @@ const ProductSku = (props) => {
     setSize(null);
     setColor(null);
     setImageSku([])
+    setEdit(false);
+    setShowView(false);
+    setImageSkuShow(null)
   };
 
   //selected
@@ -211,14 +225,14 @@ const ProductSku = (props) => {
         price: product_sku.price,
         size: product_sku.size,
         color: product_sku.color,
-        image: (
+        image: product_sku.image?(
           <img
             src={product_sku.image.url}
             alt={product_sku.image.file_name}
             width="50"
             height="50"
           ></img>
-        ),
+        ):null,
         btn: (
           <div class="project-actions  text-center">
             <button
@@ -227,26 +241,24 @@ const ProductSku = (props) => {
               onClick={handleShowView}
               style={{ marginRight: "5px" }}
             >
-              <i class="fas fa-folder"></i>
-              View
+              <i class="fas fa-folder  fa-lg"  style={{ pointerEvents: 'none' }}></i>
             </button>
-            <button
+            {/* <button
               class="btn btn-info btn-sm"
               value={product_sku.id}
               onClick={handleShowEdit}
               style={{ marginRight: "5px" }}
             >
-              <i class="fas fa-pencil-alt"></i>
+              <i class="fas fa-pencil-alt"  style={{ pointerEvents: 'none' }}></i>
               Edit
-            </button>
+            </button> */}
             <button
               class="btn btn-danger btn-sm"
               value={product_sku.id}
               onClick={handleShowDelete}
               style={{ marginRight: "5px" }}
             >
-              <i class="fas fa-trash"></i>
-              Delete
+              <i class="fas fa-trash  fa-lg"  style={{ pointerEvents: 'none' }}></i>
             </button>
           </div>
         ),
@@ -343,13 +355,13 @@ const ProductSku = (props) => {
 
                 <div className="row justify-content-center">
                   <div style={{ marginTop: "5px", marginBottom: "-67px" }}>
-                    {message !== "" ? (
+                    {/* {message !== "" ? (
                       brands.error !== "" ? (
                         <Notification type="danger" message={message} />
                       ) : (
                         <Notification type="success" message={message} />
                       )
-                    ) : null}
+                    ) : null} */}
                   </div>
                 </div>
                 <div className="row" style={{ marginBottom: "-80px" }}>
@@ -421,7 +433,7 @@ const ProductSku = (props) => {
       <ViewProductSkuModal
         show={showView}
         handleClose={handleCloseView}
-        onSubmit={handleCloseView}
+        onSubmit={handleCloseEdit}
         modalTitle={"Product"}
         stock={stock}
         setStock={setStock}
@@ -433,21 +445,25 @@ const ProductSku = (props) => {
         listSize={listSize}
         listColor={listColor}
         setColor={setColor}
-        imageSku={imageSkuShow}
+        imageSkuShow={imageSkuShow}
         listProductSku={listProductSku}
+        edit={edit}
+        imageSku={imageSku}
+        setImageSku={setImageSku}
+        setEdit={setEdit}
       />
-      {/* <DeleteProductModal
+      <DeleteProductSkuModal
         show={showDeleteModal}
         handleClose={() => {
           setShowDeleteModal(false);
-          // setProduct({});
-          // setName("");
+          setProduct({});
+          setName("");
         }}
         modalTitle={"Delete Product"}
         onSubmit={handleCloseDelete}
-        // name={name}
-      /> */}
-      <EditProductSkuModal
+        name={name}
+      />
+      {/* <EditProductSkuModal
         show={showEditModal}
         handleClose={() => {
           setShowEditModal(false);
@@ -468,7 +484,7 @@ const ProductSku = (props) => {
         setImageSku={setImageSku}
         listProductSku={listProductSku}
         listProductSku={listProductSku}
-      />
+      /> */}
     </Layout>
   );
 };

@@ -11,24 +11,43 @@ const ViewProductSkuModal = (props) => {
   useEffect(() => {
     setMessage("");
   }, []);
+
+
   const {
     show,
     handleClose,
     modalTitle,
     onSubmit,
     stock,
+    setStock,
     price,
+    setPrice,
     size,
+    setSize,
     color,
+    setColor,
     listColor,
     listSize,
+    imageSkuShow,
     imageSku,
+    setImageSku,
+    edit,
+    setEdit,
   } = props;
+
+
+
+  const handleProductPictures = (event) => {
+    console.log(event.target.files[0])
+    // setImageSku([event.target.files[0]]);
+    setImageSku([event.target.files[0]])
+  };
   return (
     <NewModal
       show={show}
       handleClose={handleClose}
-      onSubmit={message === "" ? onSubmit : null}
+      onSubmit={!edit ? (e) => setEdit(!edit) : onSubmit}
+      buttonName={!edit ? "Edit" : "Save"}
       modalTitle={modalTitle}
     >
       <div className="card-body">
@@ -43,7 +62,10 @@ const ViewProductSkuModal = (props) => {
                 placeholder="Enter number"
                 min="0"
                 value={price}
-                disabled
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                }}
+                disabled={!edit}
               />
             </div>
           </div>
@@ -56,7 +78,10 @@ const ViewProductSkuModal = (props) => {
                 className="form-control"
                 placeholder="Enter number"
                 value={stock}
-                disabled
+                disabled={!edit}
+                onChange={(e) => {
+                  setStock(e.target.value);
+                }}
               />
             </div>
           </div>
@@ -70,7 +95,8 @@ const ViewProductSkuModal = (props) => {
                 id="size"
                 value={size}
                 className="form-control"
-                disabled
+                disabled={!edit}
+                onChange={(e) => setSize(e.target.value)}
               >
                 {listSize[0]
                   ? listSize[0].data.map((size) => (
@@ -102,19 +128,41 @@ const ViewProductSkuModal = (props) => {
         <div class="form-group">
           <label for="customFile">Image</label>
           <div className="row" style={{ marginBottom: "5px", justifyContent: "center" }}>
-            {imageSku
+            {imageSku && imageSku.length == 0
               ? (
                 <img
                   id="img"
-                  src={imageSku}
+                  src={imageSkuShow}
                   width="100"
                   height="100"
                   alt={`image product`}
                   aria-hidden
                 />
               )
-              : null}
+              : <img
+                id="img-s"
+                src={!imageSku.img ? window.URL.createObjectURL(imageSku[0]) : null}
+                width="100"
+                height="100"
+                alt={`image product`}
+                aria-hidden
+              />}
           </div>
+          {edit ? (
+            <div className="custom-file">
+              <input
+                type="file"
+                className="custom-file-input"
+                id="customFile"
+                accept="image/png, image/jpeg"
+                onChange={handleProductPictures}
+              />
+              <label className="custom-file-label" for="customFile">
+                Change image
+              </label>
+            </div>
+          ) : null}
+
         </div>
       </div>
     </NewModal>

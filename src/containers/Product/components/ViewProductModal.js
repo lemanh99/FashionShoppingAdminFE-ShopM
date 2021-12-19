@@ -9,101 +9,147 @@ const ViewProductModal = (props) => {
     modalTitle,
     onSubmit,
     name,
-    price,
-    quantity,
-    discount,
-    description,
-    brandId,
+    setName,
     category,
-    productPictures,
+    setCategory,
+    descriptionDetail,
+    setDescriptionDetail,
+    descriptionList,
+    setDescriptionList,
+    productStatusId,
+    setProductStatusId,
+    listCategory,
+    listProduct,
+    listProductStatus,
+    parentCategory, 
+    setParentCategory,
+    childCategory, 
+    setChildCategory,
+    edit,
+    setEdit,
   } = props;
+
+  const selectCategory = (event) => {
+    const value = event.target.value;
+    setParentCategory(value)
+    const list = listCategory.find((category) => category.id === Number(value));
+    setChildCategory(list.child_category)
+  };
   return (
     <NewModal
       show={show}
       handleClose={handleClose}
-      // onSubmit={onSubmit}
+      onSubmit={!edit ? (e) => setEdit(!edit) : onSubmit}
+      buttonName={!edit ? "Edit" : "Save"}
       modalTitle={modalTitle}
     >
       <div className="card-body">
         <div className="form-group">
           <label>Name</label>
-          <input type="text" className="form-control" value={name} disabled/>
-        </div>
-        <div class="row">
-          <div class="col-sm-4">
-            <div className="form-group">
-              <label>Price ($)</label>
-              <input type="number" className="form-control" value={price} disabled/>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div className="form-group">
-              <label>Quantity</label>
-              <input
-                type="number"
-                className="form-control"
-                min="0"
-                value={quantity} disabled
-              />
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div className="form-group">
-              <label>Discount(%)</label>
-              <input type="number" className="form-control" value={discount} disabled />
-            </div>
-          </div>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter name brand"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+            required
+            disabled={!edit}
+          />
         </div>
         <div class="row">
           <div class="col-sm-6">
             <div className="form-group">
-              <label>Category</label>
-              <input
+              <label>Category Parent</label>
+              <select
                 name="category"
                 id="category"
-                value={category}
-                className="form-control" disabled
-              />
+                value={parentCategory}
+                className="form-control"
+                required
+                onChange={(e) => selectCategory(e)}
+                disabled={!edit}
+              >
+                {listCategory
+                  ? listCategory.map((category) =>
+                    category.child_category.length > 0 ? (
+                      <option value={category.id}>{category.category_name}</option>
+                    ) : null)
+                  : null}
+              </select>
             </div>
           </div>
           <div class="col-sm-6">
             <div className="form-group">
-              <label>Brand</label>
-              <input
-                name="brand"
-                id="brand"
-                value={brandId}
-                className="form-control" disabled
-              />
+              <label>Category Child</label>
+              <select
+                name="category"
+                id="category"
+                className="form-control"
+                required
+                disabled={!edit}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {childCategory
+                  ? childCategory.map((category) => (
+                    <option value={category.id}>{category.category_name}</option>
+                  ))
+                  : null}
+              </select>
             </div>
           </div>
+
         </div>
         <div className="form-group">
-          <label>Description</label>
+          <label>Product status</label>
+          <select
+            name="category"
+            id="category"
+            value={productStatusId}
+            className="form-control"
+            required
+            disabled={!edit}
+            onChange={(e) => setProductStatusId(e.target.value)}
+          >
+            {productStatusId == null ? (<option value="">Select status</option>) : null}
+            {listProductStatus[0]
+              ? listProductStatus[0].data.map((status) => (
+                <option value={status.id}>{status.name}</option>
+              ))
+              : null}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Description Detail</label>
           <textarea
             type="text"
             className="form-control"
+            placeholder="Enter description"
             rows="5"
-            value={description} disabled
+            value={descriptionDetail}
+            required
+            disabled={!edit}
+            onChange={(e) => {
+              setDescriptionDetail(e.target.value);
+            }}
           ></textarea>
         </div>
-
-        <div class="form-group">
-          <label for="customFile">Image</label>
-          <div className="row" style={{ marginBottom: "5px" }}>
-            {productPictures.length > 0
-              ? productPictures.map((pic, index) => (
-                  <img
-                    id={index}
-                    src={generatePublicUrl(pic.img)}
-                    width="100"
-                    height="100"
-                    alt={`image product ${index}`}
-                    aria-hidden
-                  />
-                ))
-              : null}
-          </div>
+        <div className="form-group">
+          <label>Description List</label>
+          <textarea
+            type="text"
+            className="form-control"
+            placeholder="Enter description"
+            rows="5"
+            value={descriptionList}
+            required
+            onChange={(e) => {
+              setDescriptionList(e.target.value);
+            }}
+            disabled={!edit}
+          ></textarea>
         </div>
       </div>
     </NewModal>

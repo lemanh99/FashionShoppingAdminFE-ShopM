@@ -13,11 +13,15 @@ import Statistical from "./containers/Statistical";
 import ErrorPage from "./containers/ErrorPage";
 import Home from "./containers/Home";
 import Admin from "./containers/Admin/manage_admin";
-import Settings from "./containers/SettingAccount/settings";
+import MyAccount from "./containers/Setting/MyAccount";
+import PaymentMethod from "./containers/Setting/PaymentMethod";
+import DeliverySetting from "./containers/Setting/DeliverySetting";
 import Signin from "./containers/Signin";
 import Signout from "./containers/Signout";
 import Order from "./containers/Orders/Order";
 import Dashboard from "./containers/Dashboard";
+// import Carrier from "./containers/Carrier";
+
 function App() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
@@ -55,7 +59,9 @@ function App() {
         <PrivateRoute path="/statistical" component={Statistical} />
 
         {/* setting account */}
-        <PrivateRoute path="/settings" component={Settings} />
+        <PrivateRoute path="/my-account" component={MyAccount} />
+        <PrivateRoute path="/delivery" component={DeliverySetting} />
+        <PrivateRoute path="/payment-method" component={PaymentMethod} />
 
         <Route path="/signin" component={Signin} />
         <Route path="/thongke" component={Statistical} />

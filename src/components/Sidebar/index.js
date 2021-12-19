@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { inforUser } from "../../actions";
 
 const Sidebar = (props) => {
   const user = useSelector((state) => state.user);
+  // const location = useLocation();
+  const pathname = window.location.pathname 
 
   const dispatch = useDispatch();
   useEffect(() => {
-    if (user.infor.id===null) {
+    if (user.infor.id === null) {
       dispatch(inforUser());
     }
   }, []);
@@ -92,12 +95,42 @@ const Sidebar = (props) => {
               </NavLink>
             </li> */}
 
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink to="/settings" className="nav-link ">
                 <i className="nav-icon fas fa-cog"></i>
                 <p>Settings</p>
               </NavLink>
+            </li> */}
+            <li className={pathname==="/my-account" || pathname==="/payment-method"||pathname==="/delivery"?"nav-item has-treeview menu-open":"nav-item has-treeview "}>
+              <a href="#" class={pathname==="/my-account" || pathname==="/payment-method"||pathname==="/delivery"?"nav-link active":"nav-link"}>
+                <i class="nav-icon fas fa-cog"></i>
+                <p>
+                  Settings
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul className="nav nav-treeview">
+                <li className="nav-item">
+                  <NavLink to="/my-account" className="nav-link ">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>My account</p>
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/payment-method" className="nav-link ">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Payment method</p>
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/delivery" className="nav-link ">
+                    <i className="far fa-circle nav-icon"></i>
+                    <p>Delivery</p>
+                  </NavLink>
+                </li>
+              </ul>
             </li>
+
             <li className="nav-item">
               <NavLink to={`/signout`} className="nav-link">
                 <i className="nav-icon fas fa-sign-out-alt"></i>

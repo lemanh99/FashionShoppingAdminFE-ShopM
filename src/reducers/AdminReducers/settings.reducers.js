@@ -5,6 +5,8 @@ const initState = {
   messageInfor: "",
   messagePass: "",
   loading: false,
+  delivery: [],
+  paymentMethod: [],
 };
 
 
@@ -49,6 +51,50 @@ export default (state = initState, action) => {
       };
       break;
     case adminConstants.CHANGE_PASSWORD_FAILURE:
+      state = {
+        ...state,
+        loading: false,
+        messagePass: "",
+        error: action.payload.error,
+      };
+      break;
+
+    case adminConstants.SETTING_PAYMENT_METHOD_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+      };
+      break;
+    case adminConstants.SETTING_PAYMENT_METHOD_SUCCESS:
+      state = {
+        ...state,
+        loading: false,
+        paymentMethod: action.payload.paymentMethod,
+      };
+      break;
+    case adminConstants.SETTING_PAYMENT_METHOD_FAILURE:
+      state = {
+        ...state,
+        loading: false,
+        messagePass: "",
+        error: action.payload.error,
+      };
+      break;
+
+    case adminConstants.SETTING_DELIVERY_REQUEST:
+      state = {
+        ...state,
+        loading: true,
+      };
+      break;
+    case adminConstants.SETTING_DELIVERY_SUCCESS:
+      state = {
+        ...state,
+        loading: false,
+        delivery: action.payload.delivery,
+      };
+      break;
+    case adminConstants.SETTING_DELIVERY_FAILURE:
       state = {
         ...state,
         loading: false,

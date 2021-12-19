@@ -23,7 +23,7 @@ const NewModal = (props) => {
             className="btn btn-primary"
             onClick={props.onSubmit}
           >
-            Save
+            {props.buttonName ? props.buttonName:(<>Save</>)}
           </Button>
         )}
         {props.buttons ? null : (

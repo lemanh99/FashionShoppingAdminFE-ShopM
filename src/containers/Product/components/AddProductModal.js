@@ -66,7 +66,7 @@ const AddProductModal = (props) => {
           <input
             type="text"
             className="form-control"
-            placeholder="Enter name brand"
+            placeholder="Enter name product"
             value={name}
             onChange={(e) => {
               checkName(e.target.value);
@@ -87,7 +87,7 @@ const AddProductModal = (props) => {
                 required
                 onChange={(e) => selectCategory(e)}
               >
-                {parentCategory == null ? (<option value="">Select 1 category</option>) : null}
+                {parentCategory ? (<option value="">Select 1 category</option>) : null}
                 {listCategory
                   ? listCategory.map((category) =>
                     category.child_category.length > 0 ? (
@@ -108,7 +108,7 @@ const AddProductModal = (props) => {
                 required
                 onChange={(e) => setCategory(e.target.value)}
               >
-                {category == null ? (<option value="">Select 1 category</option>) : null}
+                {category? (<option value="">Select 1 category</option>) : null}
                 {childCategory
                   ? childCategory.map((category) => (
                     <option value={category.id}>{category.category_name}</option>
@@ -164,6 +164,19 @@ const AddProductModal = (props) => {
             }}
             required
           ></textarea>
+        </div>
+        <div className="form-group">
+          <label>Key word</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter search word"
+            value={searchWord}
+            onChange={(e) => {
+              setSearchWord(e.target.value);
+            }}
+            required
+          />
         </div>
       </div>
     </NewModal>

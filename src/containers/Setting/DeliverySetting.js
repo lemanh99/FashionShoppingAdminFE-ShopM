@@ -3,15 +3,11 @@ import { MDBDataTable } from "mdbreact";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeVisibleDeliveryMethod, createDeliveryMethod, deleteDeliveryMethod, getListDelivery, updateDeliveryMethod } from "../../actions/Setting/delivery.action";
-import { changeVisiblePaymentMethod, createPaymentMethod, deletePaymentMethod, getPaymentMethod, updatePaymentMethod } from "../../actions/Setting/payment.action";
 import Layout from "../../components/Layout";
-import Notification from "../../components/UI/Notification";
 import axiosIntance from "../../helpers/axios";
 import AddDeliveryModal from "./DeliveryComponent/AddDeliveryModal";
 import ViewDeliveryModal from "./DeliveryComponent/ViewDeliveryModal";
-import AddPaymentModal from "./PaymentComponent/AddPaymentModal";
 import DeletePaymentModal from "./PaymentComponent/DeletePaymentModal";
-import ViewPaymentModal from "./PaymentComponent/ViewPaymentModal";
 
 
 const DeliverySetting = () => {
@@ -21,7 +17,8 @@ const DeliverySetting = () => {
   const [name, setName] = useState(null);
   const [serviceName, setServiceName] = useState(null);
   const [confirmUrl, setConfirmUrl] = useState(null);
-  const [description, setDescription] = useState(null)
+  const [description, setDescription] = useState(null);
+  const [deliveryFee, setDeliveryFee] = useState(0);
   const [visible, setVisible] = useState(true);
   const [deliveryId, setDeliveryId] = useState(null);
   const [deliveryItem, setDeliveryItem] = useState({});
@@ -50,7 +47,8 @@ const DeliverySetting = () => {
     setServiceName(null);
     setConfirmUrl(null);
     setDescription(null);
-    setVisible(true)
+    setVisible(true);
+    setDeliveryFee(null);
     setShowAdd(true);
   };
 
@@ -60,6 +58,7 @@ const DeliverySetting = () => {
       "service_name": serviceName,
       "confirm_url": confirmUrl,
       "description": description,
+      "delivery_fee": deliveryFee,
       "visible": visible,
     }
     dispatch(createDeliveryMethod(delivery));
@@ -68,6 +67,7 @@ const DeliverySetting = () => {
     setServiceName(null);
     setConfirmUrl(null);
     setDescription(null);
+    setDeliveryFee(null);
     setVisible(true)
   };
 
@@ -81,6 +81,7 @@ const DeliverySetting = () => {
         setServiceName(data.service_name);
         setConfirmUrl(data.confirm_url);
         setDescription(data.description);
+        setDeliveryFee(data.delivery_fee);
         setVisible(data.visible);
         setShowView(true);
       }
@@ -94,7 +95,8 @@ const DeliverySetting = () => {
     setConfirmUrl(null);
     setDescription(null);
     setVisible(true)
-    setDeliveryId(null)
+    setDeliveryId(null);
+    setDeliveryFee(null);
     setEdit(false);
     setShowView(false);
   };
@@ -116,6 +118,7 @@ const DeliverySetting = () => {
     setServiceName(null);
     setConfirmUrl(null);
     setDescription(null);
+    setDeliveryFee(null);
     setVisible(true)
     setShowDeleteModal(false);
   };
@@ -127,6 +130,7 @@ const DeliverySetting = () => {
       "service_name": serviceName,
       "confirm_url": confirmUrl,
       "description": description,
+      "delivery_fee": deliveryFee,
       "visible": visible,
     }
     dispatch(updateDeliveryMethod(delivery));
@@ -135,6 +139,7 @@ const DeliverySetting = () => {
     setServiceName(null);
     setConfirmUrl(null);
     setDescription(null);
+    setDeliveryFee(null);
     setVisible(true)
     setEdit(false);
     setShowView(false);
@@ -162,6 +167,7 @@ const DeliverySetting = () => {
       var element = {
         sr: index + 1,
         name: delivery.name,
+        delivery_fee: delivery.delivery_fee,
         service_name: delivery.service_name,
         visible: (
           <div className="form-group">
@@ -216,6 +222,12 @@ const DeliverySetting = () => {
         {
           label: "Name",
           field: "name",
+          sort: "asc",
+          width: 150,
+        },
+        {
+          label: "Delivery Fee",
+          field: "delivery_fee",
           sort: "asc",
           width: 150,
         },
@@ -318,6 +330,8 @@ const DeliverySetting = () => {
         setDescription={setDescription}
         visible={visible}
         setVisible={setVisible}
+        deliveryFee={deliveryFee}
+        setDeliveryFee={setDeliveryFee}
       />
       <ViewDeliveryModal
         show={showView}
@@ -333,6 +347,8 @@ const DeliverySetting = () => {
         description={description}
         setDescription={setDescription}
         visible={visible}
+        deliveryFee={deliveryFee}
+        setDeliveryFee={setDeliveryFee}
         setVisible={setVisible}
         edit={edit}
         setEdit={setEdit}

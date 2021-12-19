@@ -22,6 +22,8 @@ const AddDeliveryModal = (props) => {
     setDescription,
     visible,
     setVisible,
+    deliveryFee,
+    setDeliveryFee,
   } = props;
   return (
     <NewModal
@@ -40,6 +42,19 @@ const AddDeliveryModal = (props) => {
             value={name}
             onChange={(e) => {
               setName(e.target.value);
+            }}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Delivery Fee</label>
+          <input
+            type="number"
+            className="form-control"
+            placeholder="Enter name delivery"
+            value={deliveryFee}
+            onChange={(e) => {
+              setDeliveryFee(e.target.value);
             }}
             required
           />

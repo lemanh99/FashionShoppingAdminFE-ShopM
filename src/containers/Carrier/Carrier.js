@@ -3,208 +3,94 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
-  addProduct,
-  deleteProduct,
-  getListCategory,
-  getListProduct,
-  updateProduct,
+  getListTracking,
 } from "../../actions";
-import { getProductStatus } from "../../actions/Master/master.action";
 import Layout from "../../components/Layout";
-import Notification from "../../components/UI/Notification";
-import axiosIntance from "../../helpers/axios";
-import { convert_datetime_from_timestamp } from "../../utils";
-// import AddProductModal from "./components/AddProductModal";
-// import DeleteProductModal from "./components/DeleteProductModal";
-// import EditProductModal from "./components/EditProductModal";
-// import ViewProductModal from "./components/ViewProductModal";
+import TimeLine from "./Component/TimeLine";
+import { getListDelivery } from "../../actions/Setting/delivery.action";
 
 const Carrier = () => {
-  const products = useSelector((state) => state.product);
-  const brands = useSelector((state) => state.brand);
-  const categories = useSelector((state) => state.category);
-  const listProductStatus = useSelector((state) => state.master.product_status)
+  const trackings = useSelector((state) => state.carriers.trackings)
+  const delivery = useSelector((state) => state.setting_admin.delivery);
 
-  const [listProduct, setListProduct] = useState([])
-  const [status, setStatus] = useState([])
-  const [name, setName] = useState(null);
-  const [category, setCategory] = useState([])
-  const [descriptionDetail, setDescriptionDetail] = useState(null);
-  const [descriptionList, setDescriptionList] = useState(null);
-  const [searchWord, setSearchWord] = useState(null)
-  const [productStatusId, setProductStatusId] = useState(null)
-  const [listCategory, setListCategory] = useState([]);
-  const [listStatus, setListStatus] = useState([]);
-  const [product, setProduct] = useState({});
-  const [productId, setProductId] = useState(null);
-  const [message, setMessage] = useState("");
-  const [showAdd, setShowAdd] = useState(false);
-  const [parentCategory, setParentCategory] = useState([]);
-  const [childCategory, setChildCategory] = useState([]);
-  const [dataTable, setDataTable] = useState([])
-  const [edit, setEdit] = useState(false);
+  const [listTracking, setListTracking] = useState([])
+  const [listDelivery, setListDelivery] = useState([])
+  const [trackingDetail, setTrackingDetail] = useState({})
+
 
   const [showView, setShowView] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [dataTable, setDataTable] = useState([])
 
   //entries
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [search, setSearch] = useState("");
+  const [deliveryFilter, setDeliveryFilter] = useState("");
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getListProduct());
-    dispatch(getProductStatus())
-    dispatch(getListCategory());
-    setSelectedCategory("");
-    setSelectedStatus("");
-    setSearch("");
+    dispatch(getListTracking());
+    dispatch(getListDelivery());
   }, [dispatch]);
-  useEffect(() => {
-    setMessage(products.messages);
-  }, [products.messages]);
-  useEffect(() => {
-    setListProduct(products.listProduct);
-    setListCategory(categories.listCategory);
-    if (listProductStatus && listProductStatus.length > 0) {
-      setListStatus(listProductStatus[0].data)
-    }
-  }, [products.listProduct, categories.listCategory, listProductStatus]);
-  //show Modal
 
-  const handleShowAdd = () => {
-    setName(null);
-    setCategory([])
-    setDescriptionDetail(null);
-    setDescriptionList(null);
-    setSearchWord(null);
-    setProductStatusId(null);
-    setShowAdd(true);
-  };
 
-  const handleCloseAdd = () => {
-    const product = {
-      "name": name,
-      "category": [category],
-      "description_detail": descriptionDetail,
-      "description_list": descriptionList,
-      "search_word": searchWord,
-      "product_status_id": productStatusId,
+
+  useEffect(() => {
+    setListTracking(trackings)
+    setListDelivery(delivery)
+  }, [trackings, delivery]);
+
+  const getNameDelivery = (code)=>{
+    const deliveryDetails = listDelivery.find((delivery) => delivery.service_name === code);
+    if(deliveryDetails){
+      return deliveryDetails.name
     }
-    dispatch(addProduct(product)).then(() => {
-      dispatch(getListProduct())
-    });
-    setShowAdd(false);
-    setName(null);
-    setCategory([])
-    setDescriptionDetail(null);
-    setDescriptionList(null);
-    setSearchWord(null);
-    setProductStatusId(null);
-    setChildCategory([])
-    setParentCategory([])
-  };
+    return code
+  }
+
 
   const handleShowView = (e) => {
-    const id = e.target.value
-    setProductId(id);
-    axiosIntance.get(`product/detail/${id}`).then((res) => {
-      const { data } = res.data;
-      console.log(data);
-      if (data) {
-        setName(data.name);
+    const tracking_number = e.target.value
 
-        const list = listCategory.find((category) => {
-          const filter = category.child_category.find((child) => child.id === Number(data.category[0]))
-          if (filter) return true;
-          return false;
-        });
-        setParentCategory(list ? list.id : "");
-        setChildCategory(list ? list.child_category : [])
-        setCategory(data.category[0]);
-        setDescriptionDetail(data.description_detail);
-        setDescriptionList(data.description_list);
-        setSearchWord(data.search_word);
-        setProductStatusId(data.product_status_id);
-        setShowView(true);
-      }
-    })
-
+    const detail = listTracking.find((tracking) => tracking.tracking_number === tracking_number);
+    setTrackingDetail(detail);
+    setShowView(true);
 
   };
   const handleCloseView = () => {
-    setName(null);
-    setCategory([])
-    setDescriptionDetail(null);
-    setDescriptionList(null);
-    setSearchWord(null);
-    setProductStatusId(null);
-    setChildCategory([])
-    setParentCategory([])
-    setEdit(false);
+    setTrackingDetail({})
     setShowView(false);
   };
+  const getSearch = (e) => {
+    e.preventDefault();
+    const searchName = e.target.value
+    setSearch(searchName)
+    let listData = trackings
 
-  const handleShowDelete = (event) => {
-    const id = event.target.value;
-    console.log(id);
-    const prod = products.listProduct.find((product) => Number(product.id)=== Number(id));
-    console.log(prod);
-    if(prod){
-      setProduct(prod);
-      setName(prod.name);
-      setShowDeleteModal(true);
+    if(deliveryFilter){
+      listData = trackings.filter((tracking) => String(tracking.order_number).includes(searchName) && String(tracking.courier_code)===String(deliveryFilter))
+    }else{
+      listData = trackings.filter((tracking) => String(tracking.order_number).includes(searchName))
     }
-  };
+    setListTracking(listData)
+  }
 
-  const handleCloseDelete = (e) => {
-    dispatch(deleteProduct(product.id)).then(() => {
-      // dispatch(getListProduct());
-      handerFilter(e, "other")
-    });
-    setProduct({});
-    setShowDeleteModal(false);
-  };
-  const handleShowEdit = (event) => {
-    const id = event.target.value;
-    const prod = products.listProduct.find((product) => product._id === id);
-    setProduct(prod);
-    setName(prod.name);
-    setCategory(prod.category);
-    setDescriptionDetail(prod.description_detail);
-    setDescriptionList(prod.description_list);
-    setSearchWord(prod.search_word);
-    setProductStatusId(prod.product_status_id);
-    setShowEditModal(true);
-  };
+  const getDeliveryFilter = (e) => {
+    e.preventDefault();
+    const select = e.target.value
+    setDeliveryFilter(select)
+    console.log(select)
+    let listData = trackings
 
-  const handleCloseEdit = () => {
-    const product = {
-      "id": productId,
-      "name": name,
-      "category": [category],
-      "description_detail": descriptionDetail,
-      "description_list": descriptionList,
-      "search_word": searchWord,
-      "product_status_id": productStatusId,
+    if(search&&search!=""){
+      listData = trackings.filter((tracking) => String(tracking.order_number).includes(search))
     }
-    dispatch(updateProduct(product));
-    // setProduct({});
-    // setName(null);
-    // setProductId(null);
-    // setCategory([]);
-    // setDescriptionDetail(null);
-    // setDescriptionList(null);
-    // setSearchWord(null);
-    // setProductStatusId(null);
-    // setChildCategory([])
-    // setParentCategory([])
-    setEdit(false);
-    setShowEditModal(false);
-  };
-
+    if(select &&select!=""){
+      listData = listData.filter((tracking) => String(tracking.courier_code)===String(select))
+    }
+    setListTracking(listData)
+  }
+  // console.log(listDelivery)
   const handerFilter = (e, type) => {
     e.preventDefault();
     var data_filter = {
@@ -245,24 +131,61 @@ const Carrier = () => {
         // do something
       }
     }
-    dispatch(getListProduct(data))
+    // dispatch(getListProduct(data))
   }
   useEffect(() => {
     settingDatatable();
-  }, [listProduct])
+  }, [listTracking])
 
-  const rowTable = (products) => {
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  const rowTable = (listTrackings) => {
+
     const all = [];
-    for (let [index, product] of products.entries()) {
+    for (let [index, tracking] of listTrackings.entries()) {
       var element = {
         sr: index + 1,
-        name: <Link to={`/manage-product-sku/${product.id}`}>{product.name}</Link>,
-        category: product.category_name,
-        status: product.status_name,
-        create_date: convert_datetime_from_timestamp(product.created_at),
-        update_date: convert_datetime_from_timestamp(product.updated_at),
+        tracking_no: (
+          <>
+            <b>
+              {getNameDelivery(tracking.courier_code)}
+              
+              {/* Viettel Post */}
+            </b>
+            <br />
+            <a>
+              {tracking.tracking_number}
+            </a>
+          </>
+        ),
+        order_no: tracking.order_number,
+        status: (
+          <>
+            <a>
+              {tracking.delivery_status == "expired" ? (
+                <span class="badge bg-danger">{capitalizeFirstLetter(tracking.delivery_status)}</span>
+              ) : tracking.delivery_status == "notfound" ? (
+                <span class="badge bg-secondary">{capitalizeFirstLetter(tracking.delivery_status)}</span>
+              ) : (
+                <span class="badge bg-success">{capitalizeFirstLetter(tracking.delivery_status)}</span>
+              )}
+
+
+            </a>
+            <br />
+            {tracking.latest_event ? (
+              <a>
+                {tracking.latest_event}
+              </a>
+            ) : null}
+
+          </>
+        ),
+        transit_time: tracking.transit_time,
         btn: (
-          <div className="row" style={{ width: '86px' }}>
+          <div className="row">
             <div class="project-actions  text-center">
               {/* <a
                 class="card-title"
@@ -274,27 +197,11 @@ const Carrier = () => {
               </a> */}
               <button
                 class="btn btn-primary  btn-sm"
-                value={product.id}
+                value={tracking.tracking_number}
                 onClick={handleShowView}
-                style={{ marginRight: "5px" }}
+              // style={{ marginRight: "5px" }}
               >
                 <i class="fas fa-folder fa-lg" style={{ pointerEvents: 'none' }}></i>
-              </button>
-              {/* <button
-                class="btn btn-info btn-sm"
-                value={product.id}
-                onClick={handleShowEdit}
-                style={{ marginRight: "5px" }}
-              >
-                <i class="fas fa-pencil-alt fa-lg"></i>
-              </button> */}
-              <button
-                class="btn btn-danger btn-sm"
-                value={product.id}
-                onClick={handleShowDelete}
-                style={{ marginRight: "5px" }}
-              >
-                <i class="fas fa-trash fa-lg" style={{ pointerEvents: 'none' }}></i>
               </button>
             </div>
           </div>
@@ -314,32 +221,26 @@ const Carrier = () => {
           width: 50,
         },
         {
-          label: "Category",
-          field: "category",
+          label: "Tracking No.",
+          field: "tracking_no",
           sort: "asc",
           width: 150,
         },
         {
-          label: "Name",
-          field: "name",
+          label: "Order No.",
+          field: "order_no",
           sort: "asc",
           width: 300,
         },
         {
-          label: "Status",
+          label: "Parcel Status",
           field: "status",
           sort: "asc",
           width: 50,
         },
         {
-          label: "Create date",
-          field: "create_date",
-          sort: "asc",
-          width: 200,
-        },
-        {
-          label: "Update_date",
-          field: "update_date",
+          label: "Transit Time",
+          field: "transit_time",
           sort: "asc",
           width: 200,
         },
@@ -350,92 +251,61 @@ const Carrier = () => {
           width: 200,
         },
       ],
-      rows: rowTable(listProduct),
+      rows: rowTable(listTracking),
     };
     setDataTable(data)
   }
 
 
   return (
-    <Layout title="Manage product">
+    <Layout title="Manage carrier">
       <section className="content">
         <div className="container-fluid">
           <div className="row">
             <div className="col-md-12">
               <div className="card">
                 <div className="card-header">
-                  <div class="card-title">
+                  
+                  {/* <div class="card-title">
                     <button
                       className="btn btn-block bg-gradient-primary"
-                      onClick={handleShowAdd}
+                      // onClick={handleShowAdd}
                     >
                       New A Product
                     </button>
-                  </div>
+                  </div> */}
                   <div style={{ float: "right" }}>
                     <div className="row">
                       <div className="col-md-6">
 
-                        {/* <select
-                          className="form-control "
-                          value={selectedCategory}
-                          style={{ backgroundColor: "#e9ecef", width: "164px" }}
-                          onChange={(e) => setSelectedCategory(e.target.value)}
-                        >
-                          <option value="">Select Category</option>
-                          cat
-                          {listCategory
-                            ? listCategory.map((category) => (
-                              <option value={category._id}>
-                                {category.name}
-                              </option>
-                            ))
-                            : null}
-                          <option value="">All</option>
-                        </select> */}
+
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="row justify-content-center">
                   <div style={{ marginTop: "5px", marginBottom: "-67px" }}>
-                    {message !== "" ? (
-                      brands.error !== "" ? (
-                        <Notification type="danger" message={message} />
-                      ) : (
-                        <Notification type="success" message={message} />
-                      )
-                    ) : null}
                   </div>
                 </div>
 
                 <div className="row mt-3" style={{ marginBottom: "-50px" }}>
                   <div className="col-lg-12">
                     <div className="float-right">
-                      <select className="custom-select" style={{ width: 'auto' }} data-sortorder onChange={(e) => { setSelectedStatus(e.target.value); handerFilter(e, "status") }}>
-                        <option value=""> Filter by status </option>
-                        {listStatus
-                          ? listStatus.map((status) => (
-                            <option value={status.id}>{status.name}</option>
+                    <select className="custom-select" style={{ width: 'auto' }} data-sortorder onChange={(e) => { getDeliveryFilter(e) }}>
+                        <option value=""> Filter by Tracking No </option>
+                        {listDelivery
+                          ? listDelivery.map((delivery) => (
+                            <option value={delivery.service_name}>{delivery.name}</option>
                           ))
-                          : null}
-                      </select>
-                      <select className="custom-select" style={{ width: 'auto' }} data-sortorder onChange={(e) => { setSelectedCategory(e.target.value); handerFilter(e, "category") }}>
-                        <option value=""> Filter by category</option>
-                        {listCategory
-                          ? listCategory.map((category) =>
-                            category.child_category.length > 0 ? (
-                              <option value={category.id}>{category.category_name}</option>
-                            ) : null)
                           : null}
                       </select>
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Search name"
+                        placeholder="Search order id"
                         style={{ width: 'auto', display: 'inline', paddingTop: '0px' }}
                         value={search}
-                        onChange={(e) => { setSearch(e.target.value); handerFilter(e, "search") }}
+                        onChange={(e) => { getSearch(e) }}
                       ></input>
                     </div>
                     {/* <div className="" style={{ float: "right" }}>
@@ -483,6 +353,13 @@ const Carrier = () => {
         </div>
       </section>
 
+      <TimeLine
+        show={showView}
+        handleClose={handleCloseView}
+        onSubmit={handleCloseView}
+        modalTitle={"Time Line"}
+        trackingDetail={trackingDetail}
+      />
       {/* <AddProductModal
         show={showAdd}
         handleClose={() => {

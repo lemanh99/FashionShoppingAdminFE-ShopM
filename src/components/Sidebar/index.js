@@ -88,6 +88,12 @@ const Sidebar = (props) => {
                 <p>Orders</p>
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink to={`/carrier`} className="nav-link">
+                <i className="nav-icon fas fa-truck"></i>
+                <p>Carriers</p>
+              </NavLink>
+            </li>
             {/* <li className="nav-item">
               <NavLink to={`/statistical`} className="nav-link">
                 <i className="nav-icon fas fa-chart-bar"></i>

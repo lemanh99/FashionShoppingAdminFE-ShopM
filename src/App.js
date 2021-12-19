@@ -20,7 +20,7 @@ import Signin from "./containers/Signin";
 import Signout from "./containers/Signout";
 import Order from "./containers/Orders/Order";
 import Dashboard from "./containers/Dashboard";
-// import Carrier from "./containers/Carrier";
+import Carrier from "./containers/Carrier/Carrier";
 
 function App() {
   const dispatch = useDispatch();
@@ -57,6 +57,8 @@ function App() {
         <PrivateRoute path="/manage-order" component={Order} />
         {/* Statistical */}
         <PrivateRoute path="/statistical" component={Statistical} />
+        {/* Carrier */}
+        <PrivateRoute path="/carrier" component={Carrier} />
 
         {/* setting account */}
         <PrivateRoute path="/my-account" component={MyAccount} />

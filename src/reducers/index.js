@@ -13,6 +13,7 @@ import productSkuReducer from "./ProductReducers/manage_product_sku";
 import orderReducer from "./OrderReducers/order.reducer";
 import masterReducer from "./MasterReducers/manage_master";
 import dashboardReducer from "./DashboardReducers/dashboard.reducer";
+import carrierReducer from "./CarrierReducers/carrier"
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   order: orderReducer,
   master: masterReducer,
   dashboard: dashboardReducer,
+  carriers: carrierReducer,
   // page: pageReducer
 });
 

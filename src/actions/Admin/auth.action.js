@@ -12,7 +12,7 @@ export const login = (user) => {
       ...user,
     });
     try {
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         const { data } = res.data;
         const token = data.access;
         const refresh = data.refresh;
@@ -73,7 +73,7 @@ export const logout = () => {
     const refresh = localStorage.getItem("refresh");
 
     const res = await axios.post(`/user/logout/`, {refresh: refresh});
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       localStorage.clear();
       dispatch({ type: authConstants.LOGOUT_SUCCESS });
     } else {
@@ -94,7 +94,7 @@ export const inforUser = () => {
 
     const res = await await axios.get(`user/me/`);
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data
       const user = {
         id: data.user_id,
@@ -113,8 +113,10 @@ export const inforUser = () => {
     } else {
       dispatch({
         type: userConstants.GET_INFO_USER_FAILURE,
-        payload: res.data.error,
+        payload: "",
       });
+      localStorage.clear();
+      dispatch({ type: authConstants.LOGOUT_SUCCESS });
     }
   };
 };

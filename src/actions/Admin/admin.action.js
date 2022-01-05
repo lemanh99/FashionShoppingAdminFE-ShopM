@@ -11,7 +11,7 @@ export const signup = (user) => {
         ...user,
       });
 
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         dispatch(getListAdmin());
         const { message } = res.data;
         dispatch({
@@ -22,7 +22,7 @@ export const signup = (user) => {
         if (res.status === 400) {
           dispatch({
             type: adminConstants.ADMIN_REGISTER_FAILURE,
-            payload: { error: res.data.error },
+            payload: " " ,
           });
         }
       }
@@ -36,7 +36,7 @@ export const getListAdmin = () => {
     try {
       dispatch({ type: adminConstants.GET_ALL_ADMIN_REQUEST });
       const res = await axios.get(`/user/member/`);
-      if (res.status === 200) {
+      if (res && res.status === 200) {
         const { data } = res.data;
         dispatch({
           type: adminConstants.GET_ALL_ADMIN_SUCCESS,
@@ -47,7 +47,7 @@ export const getListAdmin = () => {
       } else {
         dispatch({
           type: adminConstants.GET_ALL_ADMIN_FAILURE,
-          payload: { error: res.data.error },
+          payload: " " ,
         });
       }
     } catch (error) {

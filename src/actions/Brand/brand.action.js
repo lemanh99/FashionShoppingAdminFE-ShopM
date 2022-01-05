@@ -5,7 +5,7 @@ export const getListBrand = () => {
   return async (dispatch) => {
     dispatch({ type: brandConstants.GET_ALL_BRAND_REQUEST });
     const res = await axios.get(`/brand/all`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data;
       dispatch({
         type: brandConstants.GET_ALL_BRAND_SUCCESS,
@@ -16,7 +16,7 @@ export const getListBrand = () => {
     } else {
       dispatch({
         type: brandConstants.GET_ALL_BRAND_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };
@@ -29,7 +29,7 @@ export const addBrand = (form) => {
     });
     const res = await axios.post(`/brand/create`, form);
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       dispatch(getListBrand());
       const { message } = res.data;
       dispatch({
@@ -40,7 +40,7 @@ export const addBrand = (form) => {
       if (res.status === 400) {
         dispatch({
           type: brandConstants.ADD_BRAND_FAILURE,
-          payload: { error: res.data.error },
+          payload: " " ,
         });
       }
     }
@@ -73,7 +73,7 @@ export const updateBrand = (form) => {
     dispatch({ type: brandConstants.UPDATE_BRAND_REQUEST });
     const res = await axios.post(`/brand/update/${id}`, form);
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: brandConstants.UPDATE_BRAND_SUCCESS,

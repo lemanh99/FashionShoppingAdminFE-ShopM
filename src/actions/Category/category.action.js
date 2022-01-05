@@ -6,7 +6,7 @@ export const getListCategory = () => {
     dispatch({ type: categoryConstants.GET_ALL_CATEGORY_REQUEST });
     const res = await axios.get(`/product/category`);
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data;
       dispatch({
         type: categoryConstants.GET_ALL_CATEGORY_SUCCESS,
@@ -17,7 +17,7 @@ export const getListCategory = () => {
     } else {
       dispatch({
         type: categoryConstants.GET_ALL_CATEGORY_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };
@@ -32,7 +32,7 @@ export const addCatgeory = (category) => {
     });
     const res = await axios.post(`/product/category/create/`, { ...category });
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       dispatch(getListCategory());
       const { message } = res.data;
       dispatch({
@@ -44,7 +44,7 @@ export const addCatgeory = (category) => {
       if (res.status === 400) {
         dispatch({
           type: categoryConstants.ADD_CATEGORY_FAILURE,
-          payload: { error: res.data.error },
+          payload: " " ,
         });
       }
     }
@@ -54,7 +54,7 @@ export const deleteCategory = (id) => {
   return async (dispatch) => {
     dispatch({ type: categoryConstants.DELETE_CATEGORY_REQUEST });
     const res = await axios.delete(`/product/category/delete/${id}`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { message } = res.data;
       dispatch(getListCategory());
       dispatch({
@@ -77,7 +77,7 @@ export const updateCategory = (form) => {
     dispatch({ type: categoryConstants.UPDATE_CATEGORY_REQUEST });
     const res = await axios.put(`/product/category/update/${id}`, form);
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: categoryConstants.UPDATE_CATEGORY_SUCCESS,
@@ -99,7 +99,7 @@ export const getListCategoryChild = (id) => {
     dispatch({ type: categoryChildConstants.GET_ALL_CATEGORY_CHILD_REQUEST });
     const res = await axios.get(`/product/category/`, { params: { parent_category_id:id }});
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data;
       dispatch({
         type: categoryChildConstants.GET_ALL_CATEGORY_CHILD_SUCCESS,
@@ -110,7 +110,7 @@ export const getListCategoryChild = (id) => {
     } else {
       dispatch({
         type: categoryChildConstants.GET_ALL_CATEGORY_CHILD_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };

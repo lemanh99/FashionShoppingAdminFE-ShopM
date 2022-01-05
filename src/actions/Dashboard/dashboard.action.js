@@ -22,7 +22,7 @@ export const getDashboard = () => {
         } else {
             dispatch({
                 type: dasboardConstants.GET_ALL_DASHBOARD_FAILURE,
-                payload: { error: res.data.error },
+                payload: " " ,
             });
         }
     };

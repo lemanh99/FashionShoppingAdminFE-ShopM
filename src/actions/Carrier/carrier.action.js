@@ -5,7 +5,7 @@ export const getListTracking = () => {
   return async (dispatch) => {
     dispatch({ type: carrierConstants.GET_CARRIER_REQUEST });
     const res = await axios.get(`/order/shipping/tracking-number/tracking-more/get-results`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data;
       dispatch({
         type: carrierConstants.GET_CARRIER_SUCCESS,
@@ -16,7 +16,7 @@ export const getListTracking = () => {
     } else {
       dispatch({
         type: carrierConstants.GET_CARRIER_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };

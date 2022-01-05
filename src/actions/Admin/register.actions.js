@@ -11,7 +11,7 @@ export const signup = (user) => {
       ...user,
     });
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       dispatch(getListAdmin());
       const { message } = res.data;
       dispatch({
@@ -23,7 +23,7 @@ export const signup = (user) => {
       if (res.status === 400) {
         dispatch({
           type: registerContants.ADMIN_REGISTER_FAILURE,
-          payload: { error: res.data.error },
+          payload: " " ,
         });
       }
     }

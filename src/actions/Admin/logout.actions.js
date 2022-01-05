@@ -6,7 +6,7 @@ export const logout = () => {
     dispatch({ type: logoutConstants.LOGOUT_REQUEST });
     const res = await axios.post(`/admin/signout`);
     console.log("Logout",res)
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       localStorage.clear();
       dispatch({ type: logoutConstants.LOGOUT_SUCCESS });
     } else {

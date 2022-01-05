@@ -18,10 +18,10 @@ const InvoiceModal = (props) => {
   const shipping = order.shipping;
   const orderItems = order.order_item;
   const date = new Date();
-  const handerDelivery = (e)=>{
-    if(trackingNumber!=="" || trackingNumber!=null){
+  const handerDelivery = (e) => {
+    if (trackingNumber !== "" || trackingNumber != null) {
       handleShiped(e)
-    }else{
+    } else {
       toast.error("Tracking number required")
     }
   }
@@ -52,9 +52,9 @@ const InvoiceModal = (props) => {
                         <i className="fas fa-globe" /> ShopM
                         <small className="float-right">
                           Date:{" "}
-                          {date.getDate() +
+                          {('0' + date.getDate()).slice(-2) +
                             "/" +
-                            (date.getMonth() + 1) +
+                            ('0' + (date.getMonth() + 1)).slice(-2) +
                             "/" +
                             date.getFullYear()}
                         </small>
@@ -121,7 +121,7 @@ const InvoiceModal = (props) => {
                             ? orderItems.map((product, index) => (
                               <tr>
                                 <td>{index}</td>
-                                <td><a href={`http://localhost:3000/shop/${product.product_id}`} target="_blank">{product.product_name}</a></td>
+                                <td><a href={`http://localhost:3000/shop/${product.slug}`} target="_blank">{product.product_name}</a></td>
                                 <td>{product.quantity}</td>
 
                                 <td>{product.price}</td>
@@ -152,6 +152,10 @@ const InvoiceModal = (props) => {
                         <b>Order Status :{" "}</b>
                         {order.order_status_name}
                       </p>
+                      <p>
+                        <b>Delivery name :{" "}</b>
+                        {order.shipping?order.shipping.delivery_name:null}
+                      </p>
                     </div>
                     {/* /.col */}
                     <div className="col-6">
@@ -160,17 +164,18 @@ const InvoiceModal = (props) => {
                         <table className="table">
                           <tbody>
                             <tr>
-                              <th style={{ width: "50%" }}>Subtotal:</th>
-                              <td>{order.payment_total}VND</td>
+                              <th>Total:</th>
+                              <td>{order.subtotal}VND</td>
                             </tr>
+
 
                             <tr>
                               <th>Fee Shipping:</th>
                               <td>{order.delivery_fee_total}VND</td>
                             </tr>
                             <tr>
-                              <th>Total:</th>
-                              <td>{order.subtotal}VND</td>
+                              <th style={{ width: "50%" }}>Subtotal:</th>
+                              <td>{order.payment_total}VND</td>
                             </tr>
                           </tbody>
                         </table>

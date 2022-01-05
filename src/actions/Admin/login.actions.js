@@ -19,7 +19,7 @@ export const login = (user) => {
         },
       });
     }
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { token, user } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));

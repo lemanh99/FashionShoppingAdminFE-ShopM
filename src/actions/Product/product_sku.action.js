@@ -5,7 +5,7 @@ export const getListProductSku = () => {
   return async (dispatch) => {
     dispatch({ type: productSkuConstants.GET_ALL_PRODUCT_SKU_REQUEST });
     const res = await axios.get(`/product`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data;
       dispatch({
         type: productSkuConstants.GET_ALL_PRODUCT_SKU_SUCCESS,
@@ -16,7 +16,7 @@ export const getListProductSku = () => {
     } else {
       dispatch({
         type: productSkuConstants.GET_ALL_PRODUCT_SKU_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };
@@ -26,7 +26,7 @@ export const getListProductSkuByProductId = (product_id) => {
   return async (dispatch) => {
     dispatch({ type: productSkuConstants.GET_ALL_PRODUCT_SKU_REQUEST });
     const res = await axios.get(`/product/sku/${product_id}/detail`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data;
       console.log(data)
       dispatch({
@@ -38,7 +38,7 @@ export const getListProductSkuByProductId = (product_id) => {
     } else {
       dispatch({
         type: productSkuConstants.GET_ALL_PRODUCT_SKU_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };
@@ -51,7 +51,7 @@ export const addProductSku = (form) => {
     });
     const res = await axios.post(`/product/sku/create/`, form);
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: productSkuConstants.ADD_PRODUCT_SKU_SUCCESS,
@@ -61,7 +61,7 @@ export const addProductSku = (form) => {
       if (res.status === 400) {
         dispatch({
           type: productSkuConstants.ADD_PRODUCT_SKU_FAILURE,
-          payload: { error: res.data.error },
+          payload: " " ,
         });
       }
     }
@@ -71,7 +71,7 @@ export const deleteProductSku = (id) => {
   return async (dispatch) => {
     dispatch({ type: productSkuConstants.DELETE_PRODUCT_SKU_REQUEST });
     const res = await axios.delete(`/product/sku/delete/${id}`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: productSkuConstants.DELETE_PRODUCT_SKU_SUCCESS,
@@ -92,7 +92,7 @@ export const updateProductSku = (form) => {
     dispatch({ type: productSkuConstants.UPDATE_PRODUCT_SKU_REQUEST });
     const res = await axios.put(`/product/sku/update/${form.get('id')}`, form );
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: productSkuConstants.UPDATE_PRODUCT_SKU_SUCCESS,

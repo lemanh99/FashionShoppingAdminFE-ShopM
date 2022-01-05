@@ -5,7 +5,7 @@ export const getListCustomer = () => {
   return async (dispatch) => {
     dispatch({ type: customerConstants.GET_ALL_CUSTOMER_REQUEST });
     const res = await axios.get(`customer/all`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data;
       dispatch({
         type: customerConstants.GET_ALL_CUSTOMER_SUCCESS,
@@ -16,7 +16,7 @@ export const getListCustomer = () => {
     } else {
       dispatch({
         type: customerConstants.GET_ALL_CUSTOMER_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };
@@ -31,7 +31,7 @@ export const register = (user) => {
       ...user,
     });
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       dispatch(getListCustomer());
       const { message } = res.data;
       dispatch({
@@ -42,7 +42,7 @@ export const register = (user) => {
       if (res.status === 400) {
         dispatch({
           type: customerConstants.CUSTOMER_REGISTER_FAILURE,
-          payload: { error: res.data.error },
+          payload: " " ,
         });
       }
     }
@@ -54,7 +54,7 @@ export const blockCustomer = (id) => {
     dispatch({ type: customerConstants.CUSTOMER_BLOCK_REQUEST });
     const res = await axios.put(`/customer/status`, { id });
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { message } = res.data;
       dispatch({
         type: customerConstants.CUSTOMER_BLOCK_SUCCESS,

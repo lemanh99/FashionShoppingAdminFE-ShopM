@@ -30,7 +30,7 @@ export const getOrders = () => {
     } else {
       dispatch({
         type: orderConstants.GET_ALL_ORDER_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };
@@ -39,7 +39,7 @@ export const getOrders = () => {
 export const orderShiped = (order_id, data) => {
   return async (dispatch) => {
     const res = await axios.put(`/order/shipping/transported/${order_id}`, { ...data });
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       dispatch(getOrders());
     } else {
       const { error } = res.data;
@@ -51,7 +51,7 @@ export const orderShiped = (order_id, data) => {
 export const handerOrderCanceled = (id) => {
   return async (dispatch) => {
     const res = await axios.put(`/order/admin/cancel/${id}`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       dispatch(getOrders());
     } else {
       const { error } = res.data;

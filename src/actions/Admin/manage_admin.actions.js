@@ -5,7 +5,7 @@ export const getListAdmin = () => {
   return async (dispatch) => {
     dispatch({ type: manageAdminConstants.GET_ALL_ADMIN_REQUEST });
     const res = await axios.get(`admin/all-admin`);
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const { data } = res.data;
       dispatch({
         type: manageAdminConstants.GET_ALL_ADMIN_SUCCESS,
@@ -16,7 +16,7 @@ export const getListAdmin = () => {
     } else {
       dispatch({
         type: manageAdminConstants.GET_ALL_ADMIN_FAILURE,
-        payload: { error: res.data.error },
+        payload: " " ,
       });
     }
   };

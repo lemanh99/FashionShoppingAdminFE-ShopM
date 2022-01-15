@@ -6,8 +6,9 @@ import { inforUser } from "../../actions";
 
 const Sidebar = (props) => {
   const user = useSelector((state) => state.user);
+  const authentication = useSelector((state) => state.user.infor.role);
   // const location = useLocation();
-  const pathname = window.location.pathname 
+  const pathname = window.location.pathname
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -20,7 +21,7 @@ const Sidebar = (props) => {
     <aside className="main-sidebar sidebar-dark-primary elevation-4">
       <NavLink to={"/"} className="brand-link">
         <img
-          src={`${process.env.PUBLIC_URL}/assets/img/phone.jpg`}
+          src={`${process.env.PUBLIC_URL}/assets/img/shop.jpg`}
           alt="Avatar"
           className="brand-image img-circle elevation-3"
           style={{ opacity: 0.8 }}
@@ -52,18 +53,24 @@ const Sidebar = (props) => {
             role="menu"
             data-accordion="false"
           >
-            <li className="nav-item">
-              <NavLink to={`/dashboard`} className="nav-link">
-                <i className="nav-icon fas fa-tachometer-alt"></i>
-                <p>Dashboard</p>
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink to={`/manage-admin`} className="nav-link">
-                <i className="nav-icon fas fa-users-cog"></i>
-                <p>Admin</p>
-              </NavLink>
-            </li>
+            {authentication == 1 ? (
+              <>
+                <li className="nav-item">
+                  <NavLink to={`/dashboard`} className="nav-link">
+                    <i className="nav-icon fas fa-tachometer-alt"></i>
+                    <p>Dashboard</p>
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to={`/manage-admin`} className="nav-link">
+                    <i className="nav-icon fas fa-users-cog"></i>
+                    <p>Admin</p>
+                  </NavLink>
+                </li>
+              </>
+            ) : null}
+
+
             <li className="nav-item">
               <NavLink to={`/manage-customer`} className="nav-link">
                 <i className="nav-icon fas fa-users"></i>
@@ -107,8 +114,36 @@ const Sidebar = (props) => {
                 <p>Settings</p>
               </NavLink>
             </li> */}
-            <li className={pathname==="/my-account" || pathname==="/payment-method"||pathname==="/delivery"?"nav-item has-treeview menu-open":"nav-item has-treeview "}>
-              <a href="#" class={pathname==="/my-account" || pathname==="/payment-method"||pathname==="/delivery"?"nav-link active":"nav-link"}>
+            {authentication == 1 ? (
+              <>
+                <li className={pathname === "/coupon" || pathname === "/notification" ? "nav-item has-treeview menu-open" : "nav-item has-treeview "}>
+                  <a href="#" class={pathname === "/coupon" || pathname === "/notification" ? "nav-link active" : "nav-link"}>
+                    <i class="nav-icon fab fa-shopify"></i>
+                    <p>
+                      Shop
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <ul className="nav nav-treeview">
+                    <li className="nav-item">
+                      <NavLink to="/coupon" className="nav-link ">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Coupon</p>
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink to="/notification" className="nav-link ">
+                        <i className="far fa-circle nav-icon"></i>
+                        <p>Notification</p>
+                      </NavLink>
+                    </li>
+                  </ul>
+                </li>
+              </>
+            ) : null}
+
+            <li className={pathname === "/my-account" || pathname === "/payment-method" || pathname === "/delivery" ? "nav-item has-treeview menu-open" : "nav-item has-treeview "}>
+              <a href="#" class={pathname === "/my-account" || pathname === "/payment-method" || pathname === "/delivery" ? "nav-link active" : "nav-link"}>
                 <i class="nav-icon fas fa-cog"></i>
                 <p>
                   Settings
@@ -136,7 +171,6 @@ const Sidebar = (props) => {
                 </li>
               </ul>
             </li>
-
             <li className="nav-item">
               <NavLink to={`/signout`} className="nav-link">
                 <i className="nav-icon fas fa-sign-out-alt"></i>

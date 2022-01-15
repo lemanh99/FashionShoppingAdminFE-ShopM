@@ -21,6 +21,8 @@ import Signout from "./containers/Signout";
 import Order from "./containers/Orders/Order";
 import Dashboard from "./containers/Dashboard";
 import Carrier from "./containers/Carrier/Carrier";
+import Coupon from "./containers/Shop/Coupon";
+import NotificationShop from "./containers/Shop/Notification"
 
 function App() {
   const dispatch = useDispatch();
@@ -64,6 +66,12 @@ function App() {
         <PrivateRoute path="/my-account" component={MyAccount} />
         <PrivateRoute path="/delivery" component={DeliverySetting} />
         <PrivateRoute path="/payment-method" component={PaymentMethod} />
+
+        {/* shop */}
+        <PrivateRoute path="/coupon" component={Coupon} />
+        <PrivateRoute path="/notification" component={NotificationShop} />
+        {/* 
+        <PrivateRoute path="/payment-method" component={PaymentMethod} /> */}
 
         <Route path="/signin" component={Signin} />
         <Route path="/thongke" component={Statistical} />

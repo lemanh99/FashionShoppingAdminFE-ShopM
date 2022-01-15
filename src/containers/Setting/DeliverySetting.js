@@ -257,7 +257,7 @@ const DeliverySetting = () => {
 
 
   return (
-    <Layout title="Manage product">
+    <Layout title="Settings delivery">
       <section className="content">
         <div className="container-fluid">
           <div className="row">

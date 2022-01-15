@@ -14,6 +14,8 @@ import orderReducer from "./OrderReducers/order.reducer";
 import masterReducer from "./MasterReducers/manage_master";
 import dashboardReducer from "./DashboardReducers/dashboard.reducer";
 import carrierReducer from "./CarrierReducers/carrier"
+import notificationUserReducer from "./AdminReducers/notification_user.reducers"
+import shopReducer from "./ShopReducers/shop.reducer"
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -32,6 +34,8 @@ const rootReducer = combineReducers({
   master: masterReducer,
   dashboard: dashboardReducer,
   carriers: carrierReducer,
+  notificationUser: notificationUserReducer,
+  shop: shopReducer,
   // page: pageReducer
 });
 

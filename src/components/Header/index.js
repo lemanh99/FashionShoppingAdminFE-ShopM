@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import NotificationHeader from "./notification_header";
 
 const Header = (props) => {
   return (
@@ -37,6 +38,7 @@ const Header = (props) => {
             </div>
           </div>
         </form>
+        <NotificationHeader />
       </nav>
     </>
   );

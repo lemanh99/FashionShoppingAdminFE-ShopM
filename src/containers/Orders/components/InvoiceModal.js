@@ -97,7 +97,7 @@ const InvoiceModal = (props) => {
                       {/* <b>Invoice #007612</b> */}
                       <br />
                       <br />
-                      <b>Order ID:{" "}</b> {order.order_code}
+                      <b>Order No:{" "}</b> {order.order_code}
                       <br />
                       <b>Order date:{" "}</b> {convert_date_from_timestamp(order.order_date)}
                       <br />

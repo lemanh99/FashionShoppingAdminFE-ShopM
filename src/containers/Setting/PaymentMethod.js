@@ -207,7 +207,7 @@ const PaymentMethod = () => {
 
 
   return (
-    <Layout title="Manage product">
+    <Layout title="Setting payment">
       <section className="content">
         <div className="container-fluid">
           <div className="row">

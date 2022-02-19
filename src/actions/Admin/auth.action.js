@@ -29,7 +29,7 @@ export const login = (user) => {
           dispatch({
             type: authConstants.LOGIN_FAILURE,
             payload: {
-              error: res.data.error,
+              error: "",
             },
           });
         }

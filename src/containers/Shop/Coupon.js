@@ -116,7 +116,7 @@ const Coupon = () => {
     const handleCloseEdit = () => {
         const coupon = {
             "id": couponId,
-            "group_id": couponCode,
+            "coupon_code": couponCode,
             "price": price,
             "quatity": quatity,
             "expiration_date": expriedDate ? expriedDate.getTime() : expriedDate,

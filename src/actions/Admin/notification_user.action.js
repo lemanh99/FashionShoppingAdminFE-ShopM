@@ -17,7 +17,7 @@ export const getNotificationUser = () => {
         } else {
             dispatch({
                 type: notificationUserConstants.NOTIFICATION_USER_FAILURE,
-                payload: { error: res.data.error },
+                payload: { error: "" },
             });
         }
     };

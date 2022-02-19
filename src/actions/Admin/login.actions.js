@@ -15,7 +15,7 @@ export const login = (user) => {
       dispatch({
         type: loginConstants.LOGIN_FAILURE,
         payload: {
-          error: res.data.error,
+          error: "",
         },
       });
     }
@@ -35,7 +35,7 @@ export const login = (user) => {
         dispatch({
           type: loginConstants.LOGIN_FAILURE,
           payload: {
-            error: res.data.error,
+            error: "",
           },
         });
       }

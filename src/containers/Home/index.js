@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import './loading.css';
 // import Layout from '../../components/Layout';
 import {
@@ -15,20 +15,21 @@ import { Redirect } from "react-router-dom";
  **/
 
 const Home = (props) => {
+  const user = useSelector((state) => state.user);
   const [wait, setWait] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getListAdmin());
     dispatch(getOrders());
     dispatch(getListCustomer());
-
     dispatch(getListProduct());
   });
   setTimeout(() => {
     setWait(true);
   }, 3000);
   return wait ? (
-    <Redirect to={`dashboard`} />
+    user.infor.role === 1 ? <Redirect to={`dashboard`} /> : <Redirect to={`manage-customer`} />
+
   ) : (
     <div className="card-body">
       .

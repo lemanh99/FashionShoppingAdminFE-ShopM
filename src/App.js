@@ -23,6 +23,7 @@ import Dashboard from "./containers/Dashboard";
 import Carrier from "./containers/Carrier/Carrier";
 import Coupon from "./containers/Shop/Coupon";
 import NotificationShop from "./containers/Shop/Notification"
+import Email from "./containers/Email/Email"
 
 function App() {
   const dispatch = useDispatch();
@@ -75,6 +76,7 @@ function App() {
 
         <Route path="/signin" component={Signin} />
         <Route path="/thongke" component={Statistical} />
+        <Route path="/email" component={Email} />
 
         <PrivateRoute component={ErrorPage} />
       </Switch>

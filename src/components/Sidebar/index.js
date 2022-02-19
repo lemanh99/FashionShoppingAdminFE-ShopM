@@ -101,6 +101,12 @@ const Sidebar = (props) => {
                 <p>Carriers</p>
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink to={`/email`} className="nav-link">
+                <i className="nav-icon far fa-envelope"></i>
+                <p>Mail Inbox</p>
+              </NavLink>
+            </li>
             {/* <li className="nav-item">
               <NavLink to={`/statistical`} className="nav-link">
                 <i className="nav-icon fas fa-chart-bar"></i>

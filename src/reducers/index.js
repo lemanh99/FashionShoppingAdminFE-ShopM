@@ -39,4 +39,5 @@ const rootReducer = combineReducers({
   // page: pageReducer
 });
 
-export default rootReducer;
+export default (state, action) => rootReducer(action.type === 'LOGOUT_SUCCESS' ? undefined : state, action);
+// LOGOUT_SUCCESS

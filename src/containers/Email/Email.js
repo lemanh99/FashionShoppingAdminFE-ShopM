@@ -93,9 +93,9 @@ const Email = () => {
 
     }
     const convertHtmlToString = (html) => {
-        var htmlString = "<h1><b>test</b></h1>";
+        var htmlString = html;
         var plainString = htmlString.replace(/<[^>]+>/g, '');
-        return String(plainString).slice(0, 5)
+        return String(plainString).slice(0, 15)
     }
 
     const onEditorStateChange = (editorState) => {
@@ -346,7 +346,7 @@ const Email = () => {
                                                                 >
                                                                     <a href="#">{item.type == "1" ? ("Some people") : item.type == "2" ? ("Email subscribe") : "People"}</a>
                                                                 </td>
-                                                                <td className="mailbox-subject" width="62%"><b>{item.subject}</b> {convertHtmlToString(item.content_html)}...
+                                                                <td className="mailbox-subject" width="62%"><b>{item.subject}</b> - {convertHtmlToString(item.content_html)}...
                                                                 </td>
                                                                 {/* <td className="mailbox-attachment" /> */}
                                                                 <td className="mailbox-date" width="20%">{getDayDiff(item.created_at)}</td>

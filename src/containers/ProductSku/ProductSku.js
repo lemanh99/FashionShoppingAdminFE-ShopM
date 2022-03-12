@@ -295,17 +295,17 @@ const ProductSku = (props) => {
           width: 50,
         },
         {
-          label: "Size",
+          label: "Type",
           field: "size",
           sort: "asc",
           width: 50,
         },
-        {
-          label: "Color",
-          field: "color",
-          sort: "asc",
-          width: 50,
-        },
+        // {
+        //   label: "Color",
+        //   field: "color",
+        //   sort: "asc",
+        //   width: 50,
+        // },
         {
           label: "Image",
           field: "image",

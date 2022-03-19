@@ -1,3 +1,6 @@
+# Graduation thesis
+- Final: 19/03/2022 - Da nang university of technology
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
